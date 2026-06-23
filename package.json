@@ -15,6 +15,7 @@
     "@aws-sdk/client-bedrock-runtime": "^3.1075.0",
     "@aws-sdk/rds-signer": "^3.1075.0",
     "@vercel/blob": "^2.4.1",
+    "@vercel/functions": "^3.7.3",
     "next": "16.2.9",
     "pg": "^8.22.0",
     "react": "19.2.4",
