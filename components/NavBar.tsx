@@ -12,10 +12,13 @@ export default function NavBar() {
         </Link>
         <nav className="flex items-center gap-5 text-sm font-medium text-gray-600">
           <Link href="/" className="hover:text-brand transition-colors">
-            Scan
+            Home
           </Link>
           <Link href="/history" className="hover:text-brand transition-colors">
             History
+          </Link>
+          <Link href="/dashboard" className="hover:text-brand transition-colors">
+            Dashboard
           </Link>
           <Link href="/profiles" className="hover:text-brand transition-colors">
             Profiles

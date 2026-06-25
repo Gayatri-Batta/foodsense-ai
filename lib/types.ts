@@ -68,6 +68,40 @@ export interface ChatMessage {
   created_at: string;
 }
 
+export interface DailyNutritionTotals {
+  caloriesKcal: number;
+  carbsG: number;
+  proteinG: number;
+  fatG: number;
+  fiberG: number;
+  sugarG: number;
+  sodiumMg: number;
+  cholesterolMg: number;
+}
+
+export interface DailyNutritionItem {
+  scanId: string;
+  scanCreatedAt: string;
+  detectedLabel: string;
+  canonicalName: string | null;
+  caloriesKcal: number | null;
+  carbsG: number | null;
+  proteinG: number | null;
+  fatG: number | null;
+  fiberG: number | null;
+  sugarG: number | null;
+  sodiumMg: number | null;
+  cholesterolMg: number | null;
+  keyNutrients: Record<string, number>;
+}
+
+export interface DailyNutritionResponse {
+  date: string;
+  totals: DailyNutritionTotals;
+  micronutrients: Record<string, number>;
+  items: DailyNutritionItem[];
+}
+
 export interface ProfileConditionSelection {
   conditionCode?: string;
   customLabel?: string;

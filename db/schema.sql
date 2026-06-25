@@ -61,16 +61,25 @@ CREATE TABLE IF NOT EXISTS nutrition_items (
   carbs_g NUMERIC,
   protein_g NUMERIC,
   fiber_g NUMERIC,
+  calories_kcal NUMERIC,
+  fat_g NUMERIC,                              -- total fat per serving (saturated_fat_g is a subset)
   allergen_tags TEXT[] NOT NULL DEFAULT '{}',
   diet_flags TEXT[] NOT NULL DEFAULT '{}',   -- 'vegan_unsafe' | 'vegetarian_safe' | 'keto_unsafe' ...
   key_nutrients JSONB NOT NULL DEFAULT '{}', -- escape hatch, e.g. {"potassium_mg": 350}
   serving_desc TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- Added after the initial table was already live in production; ADD COLUMN
+-- IF NOT EXISTS makes re-running this file against an existing DB safe.
+ALTER TABLE nutrition_items ADD COLUMN IF NOT EXISTS calories_kcal NUMERIC;
+ALTER TABLE nutrition_items ADD COLUMN IF NOT EXISTS fat_g NUMERIC;
 CREATE INDEX IF NOT EXISTS nutrition_items_embedding_idx
   ON nutrition_items USING hnsw (embedding vector_cosine_ops);
 CREATE INDEX IF NOT EXISTS nutrition_items_allergen_gin
   ON nutrition_items USING gin (allergen_tags);
+-- Lets the seed route upsert by name instead of inserting duplicates on re-run.
+CREATE UNIQUE INDEX IF NOT EXISTS nutrition_items_canonical_name_idx
+  ON nutrition_items (canonical_name);
 
 -- ============ SCANS ============
 CREATE TABLE IF NOT EXISTS scans (

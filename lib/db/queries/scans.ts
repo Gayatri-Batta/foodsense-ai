@@ -143,6 +143,11 @@ interface ScanItemWithNutritionRow extends ScanItemRow {
   glycemic_load: string | null;
   cholesterol_mg: string | null;
   saturated_fat_g: string | null;
+  fat_g: string | null;
+  calories_kcal: string | null;
+  carbs_g: string | null;
+  protein_g: string | null;
+  fiber_g: string | null;
   sodium_mg: string | null;
   sugar_g: string | null;
   allergen_tags: string[] | null;
@@ -155,6 +160,7 @@ interface ScanItemWithNutritionRow extends ScanItemRow {
 export async function getScanItemsWithNutrition(scanId: string): Promise<ScanItemWithNutritionRow[]> {
   return query<ScanItemWithNutritionRow>(
     `SELECT si.*, n.glycemic_index, n.glycemic_load, n.cholesterol_mg, n.saturated_fat_g,
+            n.fat_g, n.calories_kcal, n.carbs_g, n.protein_g, n.fiber_g,
             n.sodium_mg, n.sugar_g, n.allergen_tags, n.diet_flags, n.key_nutrients
      FROM scan_items si
      LEFT JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
@@ -162,6 +168,84 @@ export async function getScanItemsWithNutrition(scanId: string): Promise<ScanIte
      ORDER BY si.created_at`,
     [scanId],
   );
+}
+
+export interface DailyNutritionTotals {
+  caloriesKcal: number;
+  carbsG: number;
+  proteinG: number;
+  fatG: number;
+  fiberG: number;
+  sugarG: number;
+  sodiumMg: number;
+  cholesterolMg: number;
+}
+
+export interface DailyNutritionItem {
+  scanId: string;
+  scanCreatedAt: string;
+  detectedLabel: string;
+  canonicalName: string | null;
+  caloriesKcal: number | null;
+  carbsG: number | null;
+  proteinG: number | null;
+  fatG: number | null;
+  fiberG: number | null;
+  sugarG: number | null;
+  sodiumMg: number | null;
+  cholesterolMg: number | null;
+  keyNutrients: Record<string, number>;
+}
+
+interface DailyNutritionQueryRow {
+  scan_id: string;
+  scan_created_at: string;
+  detected_label: string;
+  canonical_name: string | null;
+  calories_kcal: string | null;
+  carbs_g: string | null;
+  protein_g: string | null;
+  fat_g: string | null;
+  fiber_g: string | null;
+  sugar_g: string | null;
+  sodium_mg: string | null;
+  cholesterol_mg: string | null;
+  key_nutrients: Record<string, number> | null;
+}
+
+// Daily nutrition dashboard: every matched scan_item for the user on a given
+// UTC calendar day, with the raw per-item nutrition still attached so totals
+// (incl. JSONB micronutrients) can be summed in JS rather than fighting
+// jsonb_each aggregation in SQL. Unmatched items have no nutrition row and
+// are excluded from totals — same convention as the scoring engine.
+export async function listDailyNutritionItems(userId: string, dateStr: string): Promise<DailyNutritionItem[]> {
+  const rows = await query<DailyNutritionQueryRow>(
+    `SELECT s.id AS scan_id, s.created_at AS scan_created_at, si.detected_label,
+            n.canonical_name, n.calories_kcal, n.carbs_g, n.protein_g, n.fat_g,
+            n.fiber_g, n.sugar_g, n.sodium_mg, n.cholesterol_mg, n.key_nutrients
+     FROM scans s
+     JOIN scan_items si ON si.scan_id = s.id
+     JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
+     WHERE s.user_id = $1 AND s.created_at::date = $2::date
+     ORDER BY s.created_at`,
+    [userId, dateStr],
+  );
+
+  return rows.map((r) => ({
+    scanId: r.scan_id,
+    scanCreatedAt: r.scan_created_at,
+    detectedLabel: r.detected_label,
+    canonicalName: r.canonical_name,
+    caloriesKcal: r.calories_kcal == null ? null : Number(r.calories_kcal),
+    carbsG: r.carbs_g == null ? null : Number(r.carbs_g),
+    proteinG: r.protein_g == null ? null : Number(r.protein_g),
+    fatG: r.fat_g == null ? null : Number(r.fat_g),
+    fiberG: r.fiber_g == null ? null : Number(r.fiber_g),
+    sugarG: r.sugar_g == null ? null : Number(r.sugar_g),
+    sodiumMg: r.sodium_mg == null ? null : Number(r.sodium_mg),
+    cholesterolMg: r.cholesterol_mg == null ? null : Number(r.cholesterol_mg),
+    keyNutrients: r.key_nutrients ?? {},
+  }));
 }
 
 export async function updateScanItemScore(

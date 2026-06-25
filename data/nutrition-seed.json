@@ -7,6 +7,8 @@
     "glycemicLoad": null,
     "cholesterolMg": 95,
     "saturatedFatG": 2.7,
+    "fatG": 8.5,
+    "caloriesKcal": 150,
     "sodiumMg": 80,
     "sugarG": 0,
     "carbsG": 0,
@@ -14,6 +16,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 190, "vitamin_c_mg": 0, "calcium_mg": 8, "iron_mg": 0.8 },
     "servingDesc": "1 thigh (~85g)"
   },
   {
@@ -23,6 +26,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 85,
     "saturatedFatG": 1.0,
+    "fatG": 4.3,
+    "caloriesKcal": 198,
     "sodiumMg": 70,
     "sugarG": 0,
     "carbsG": 0,
@@ -30,6 +35,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 256, "vitamin_c_mg": 0, "calcium_mg": 15, "iron_mg": 1 },
     "servingDesc": "1 breast (~120g)"
   },
   {
@@ -40,6 +46,8 @@
     "glycemicLoad": 29,
     "cholesterolMg": 0,
     "saturatedFatG": 0.1,
+    "fatG": 0.4,
+    "caloriesKcal": 205,
     "sodiumMg": 1,
     "sugarG": 0,
     "carbsG": 45,
@@ -47,6 +55,7 @@
     "fiberG": 0.6,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 55, "vitamin_c_mg": 0, "calcium_mg": 16, "iron_mg": 1.9 },
     "servingDesc": "1 cup cooked"
   },
   {
@@ -57,6 +66,8 @@
     "glycemicLoad": 16,
     "cholesterolMg": 0,
     "saturatedFatG": 0.2,
+    "fatG": 1.8,
+    "caloriesKcal": 216,
     "sodiumMg": 2,
     "sugarG": 0.7,
     "carbsG": 45,
@@ -64,6 +75,7 @@
     "fiberG": 3.5,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 154, "vitamin_c_mg": 0, "calcium_mg": 20, "iron_mg": 0.8 },
     "servingDesc": "1 cup cooked"
   },
   {
@@ -73,6 +85,8 @@
     "glycemicIndex": 15,
     "cholesterolMg": 0,
     "saturatedFatG": 0,
+    "fatG": 0.6,
+    "caloriesKcal": 55,
     "sodiumMg": 33,
     "sugarG": 1.5,
     "carbsG": 6,
@@ -80,6 +94,7 @@
     "fiberG": 2.4,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 457, "vitamin_c_mg": 101, "calcium_mg": 62, "iron_mg": 1 },
     "servingDesc": "1 cup"
   },
   {
@@ -89,6 +104,8 @@
     "glycemicIndex": 15,
     "cholesterolMg": 0,
     "saturatedFatG": 0,
+    "fatG": 0.1,
+    "caloriesKcal": 7,
     "sodiumMg": 24,
     "sugarG": 0.1,
     "carbsG": 1.1,
@@ -96,6 +113,7 @@
     "fiberG": 0.7,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 167, "vitamin_c_mg": 8, "calcium_mg": 30, "iron_mg": 0.8 },
     "servingDesc": "1 cup raw"
   },
   {
@@ -106,6 +124,8 @@
     "glycemicLoad": 10,
     "cholesterolMg": 0,
     "saturatedFatG": 0.6,
+    "fatG": 0.9,
+    "caloriesKcal": 67,
     "sodiumMg": 170,
     "sugarG": 1.5,
     "carbsG": 13,
@@ -113,6 +133,7 @@
     "fiberG": 0.8,
     "allergenTags": ["gluten"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 30, "vitamin_c_mg": 0, "calcium_mg": 30, "iron_mg": 0.7 },
     "servingDesc": "1 slice"
   },
   {
@@ -122,6 +143,8 @@
     "glycemicIndex": 14,
     "cholesterolMg": 0,
     "saturatedFatG": 3.3,
+    "fatG": 16,
+    "caloriesKcal": 188,
     "sodiumMg": 147,
     "sugarG": 3,
     "carbsG": 7,
@@ -129,6 +152,7 @@
     "fiberG": 2,
     "allergenTags": ["peanut"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 208, "vitamin_c_mg": 0, "calcium_mg": 12, "iron_mg": 0.6 },
     "servingDesc": "2 tbsp"
   },
   {
@@ -138,6 +162,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 161,
     "saturatedFatG": 0.3,
+    "fatG": 1.4,
+    "caloriesKcal": 99,
     "sodiumMg": 190,
     "sugarG": 0,
     "carbsG": 0.2,
@@ -145,6 +171,7 @@
     "fiberG": 0,
     "allergenTags": ["shellfish"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 259, "vitamin_c_mg": 0, "calcium_mg": 70, "iron_mg": 0.5 },
     "servingDesc": "100g"
   },
   {
@@ -154,6 +181,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 63,
     "saturatedFatG": 1.9,
+    "fatG": 13,
+    "caloriesKcal": 208,
     "sodiumMg": 60,
     "sugarG": 0,
     "carbsG": 0,
@@ -161,6 +190,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 363, "vitamin_c_mg": 0, "calcium_mg": 9, "iron_mg": 0.3 },
     "servingDesc": "100g fillet"
   },
   {
@@ -170,6 +200,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 372,
     "saturatedFatG": 3.3,
+    "fatG": 10,
+    "caloriesKcal": 148,
     "sodiumMg": 168,
     "sugarG": 1,
     "carbsG": 1.6,
@@ -177,6 +209,7 @@
     "fiberG": 0,
     "allergenTags": ["egg"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 138, "vitamin_c_mg": 0, "calcium_mg": 56, "iron_mg": 1.8 },
     "servingDesc": "2 eggs"
   },
   {
@@ -186,6 +219,8 @@
     "glycemicIndex": 0,
     "cholesterolMg": 28,
     "saturatedFatG": 6,
+    "fatG": 9.3,
+    "caloriesKcal": 113,
     "sodiumMg": 180,
     "sugarG": 0.1,
     "carbsG": 0.4,
@@ -193,6 +228,7 @@
     "fiberG": 0,
     "allergenTags": ["dairy"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 28, "vitamin_c_mg": 0, "calcium_mg": 200, "iron_mg": 0.2 },
     "servingDesc": "1 oz slice"
   },
   {
@@ -202,6 +238,8 @@
     "glycemicIndex": 27,
     "cholesterolMg": 24,
     "saturatedFatG": 4.6,
+    "fatG": 8,
+    "caloriesKcal": 149,
     "sodiumMg": 105,
     "sugarG": 12,
     "carbsG": 12,
@@ -209,6 +247,7 @@
     "fiberG": 0,
     "allergenTags": ["dairy"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 322, "vitamin_c_mg": 0, "calcium_mg": 276, "iron_mg": 0.1 },
     "servingDesc": "1 cup"
   },
   {
@@ -218,6 +257,8 @@
     "glycemicIndex": 0,
     "cholesterolMg": 31,
     "saturatedFatG": 7.2,
+    "fatG": 11.5,
+    "caloriesKcal": 102,
     "sodiumMg": 90,
     "sugarG": 0,
     "carbsG": 0,
@@ -225,6 +266,7 @@
     "fiberG": 0,
     "allergenTags": ["dairy"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 3, "vitamin_c_mg": 0, "calcium_mg": 3, "iron_mg": 0 },
     "servingDesc": "1 tbsp"
   },
   {
@@ -235,6 +277,8 @@
     "glycemicLoad": 22,
     "cholesterolMg": 0,
     "saturatedFatG": 2.3,
+    "fatG": 17,
+    "caloriesKcal": 365,
     "sodiumMg": 210,
     "sugarG": 0.3,
     "carbsG": 35,
@@ -242,6 +286,7 @@
     "fiberG": 3.8,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 580, "vitamin_c_mg": 12, "calcium_mg": 18, "iron_mg": 1.2 },
     "servingDesc": "medium serving (~117g)"
   },
   {
@@ -251,6 +296,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 90,
     "saturatedFatG": 4.5,
+    "fatG": 19,
+    "caloriesKcal": 320,
     "sodiumMg": 520,
     "sugarG": 0,
     "carbsG": 8,
@@ -258,6 +305,7 @@
     "fiberG": 0.3,
     "allergenTags": ["gluten"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 220, "vitamin_c_mg": 0, "calcium_mg": 20, "iron_mg": 1.2 },
     "servingDesc": "1 piece"
   },
   {
@@ -267,6 +315,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 88,
     "saturatedFatG": 6.5,
+    "fatG": 19,
+    "caloriesKcal": 271,
     "sodiumMg": 60,
     "sugarG": 0,
     "carbsG": 0,
@@ -274,6 +324,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 318, "vitamin_c_mg": 0, "calcium_mg": 18, "iron_mg": 2.6 },
     "servingDesc": "100g"
   },
   {
@@ -283,6 +334,8 @@
     "glycemicIndex": 15,
     "cholesterolMg": 0,
     "saturatedFatG": 0.6,
+    "fatG": 4.8,
+    "caloriesKcal": 76,
     "sodiumMg": 10,
     "sugarG": 0.6,
     "carbsG": 2,
@@ -290,6 +343,7 @@
     "fiberG": 0.7,
     "allergenTags": ["soy"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 121, "vitamin_c_mg": 0, "calcium_mg": 350, "iron_mg": 5.4 },
     "servingDesc": "100g"
   },
   {
@@ -300,6 +354,8 @@
     "glycemicLoad": 5,
     "cholesterolMg": 0,
     "saturatedFatG": 0.1,
+    "fatG": 0.8,
+    "caloriesKcal": 230,
     "sodiumMg": 2,
     "sugarG": 1.8,
     "carbsG": 20,
@@ -307,6 +363,7 @@
     "fiberG": 8,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 731, "vitamin_c_mg": 3, "calcium_mg": 38, "iron_mg": 6.6 },
     "servingDesc": "1 cup cooked"
   },
   {
@@ -317,6 +374,8 @@
     "glycemicLoad": 13,
     "cholesterolMg": 0,
     "saturatedFatG": 0.3,
+    "fatG": 3.6,
+    "caloriesKcal": 222,
     "sodiumMg": 6,
     "sugarG": 0.9,
     "carbsG": 21,
@@ -324,6 +383,7 @@
     "fiberG": 2.8,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 318, "vitamin_c_mg": 0, "calcium_mg": 31, "iron_mg": 2.8 },
     "servingDesc": "1 cup cooked"
   },
   {
@@ -333,6 +393,8 @@
     "glycemicIndex": 15,
     "cholesterolMg": 0,
     "saturatedFatG": 2.1,
+    "fatG": 15,
+    "caloriesKcal": 160,
     "sodiumMg": 7,
     "sugarG": 0.3,
     "carbsG": 9,
@@ -340,6 +402,7 @@
     "fiberG": 7,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 485, "vitamin_c_mg": 10, "calcium_mg": 12, "iron_mg": 0.6 },
     "servingDesc": "half avocado"
   },
   {
@@ -350,6 +413,8 @@
     "glycemicLoad": 17,
     "cholesterolMg": 2,
     "saturatedFatG": 1.2,
+    "fatG": 9,
+    "caloriesKcal": 237,
     "sodiumMg": 320,
     "sugarG": 1.7,
     "carbsG": 18,
@@ -357,6 +422,7 @@
     "fiberG": 1.5,
     "allergenTags": ["dairy"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 600, "vitamin_c_mg": 13, "calcium_mg": 55, "iron_mg": 0.6 },
     "servingDesc": "1 cup"
   },
   {
@@ -367,6 +433,8 @@
     "glycemicLoad": 22,
     "cholesterolMg": 30,
     "saturatedFatG": 6,
+    "fatG": 18,
+    "caloriesKcal": 380,
     "sodiumMg": 600,
     "sugarG": 3,
     "carbsG": 36,
@@ -374,6 +442,7 @@
     "fiberG": 1.5,
     "allergenTags": ["dairy", "gluten"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 150, "vitamin_c_mg": 0, "calcium_mg": 250, "iron_mg": 1.5 },
     "servingDesc": "1 cup"
   },
   {
@@ -384,6 +453,8 @@
     "glycemicLoad": 16,
     "cholesterolMg": 22,
     "saturatedFatG": 5,
+    "fatG": 12,
+    "caloriesKcal": 298,
     "sodiumMg": 640,
     "sugarG": 2.5,
     "carbsG": 28,
@@ -391,6 +462,7 @@
     "fiberG": 1.8,
     "allergenTags": ["dairy", "gluten"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 200, "vitamin_c_mg": 1, "calcium_mg": 180, "iron_mg": 1.8 },
     "servingDesc": "1 slice"
   },
   {
@@ -400,6 +472,8 @@
     "glycemicIndex": 20,
     "cholesterolMg": 25,
     "saturatedFatG": 3.5,
+    "fatG": 22,
+    "caloriesKcal": 280,
     "sodiumMg": 450,
     "sugarG": 2,
     "carbsG": 8,
@@ -407,6 +481,7 @@
     "fiberG": 2,
     "allergenTags": ["dairy", "gluten", "egg"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 350, "vitamin_c_mg": 10, "calcium_mg": 150, "iron_mg": 1 },
     "servingDesc": "1 bowl"
   },
   {
@@ -416,6 +491,8 @@
     "glycemicIndex": 6,
     "cholesterolMg": 0,
     "saturatedFatG": 0.6,
+    "fatG": 4,
+    "caloriesKcal": 70,
     "sodiumMg": 200,
     "sugarG": 0.4,
     "carbsG": 7,
@@ -423,6 +500,7 @@
     "fiberG": 3,
     "allergenTags": ["sesame"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 70, "vitamin_c_mg": 1, "calcium_mg": 20, "iron_mg": 0.6 },
     "servingDesc": "2 tbsp"
   },
   {
@@ -433,6 +511,8 @@
     "glycemicLoad": 12,
     "cholesterolMg": 0,
     "saturatedFatG": 0.3,
+    "fatG": 0.4,
+    "caloriesKcal": 83,
     "sodiumMg": 320,
     "sugarG": 0.8,
     "carbsG": 17,
@@ -440,6 +520,7 @@
     "fiberG": 0.7,
     "allergenTags": ["gluten"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 36, "vitamin_c_mg": 0, "calcium_mg": 25, "iron_mg": 0.8 },
     "servingDesc": "half pita"
   },
   {
@@ -449,6 +530,8 @@
     "glycemicIndex": 12,
     "cholesterolMg": 10,
     "saturatedFatG": 0.7,
+    "fatG": 0.4,
+    "caloriesKcal": 59,
     "sodiumMg": 56,
     "sugarG": 4,
     "carbsG": 6,
@@ -456,6 +539,7 @@
     "fiberG": 0,
     "allergenTags": ["dairy"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 141, "vitamin_c_mg": 0, "calcium_mg": 110, "iron_mg": 0.05 },
     "servingDesc": "100g"
   },
   {
@@ -465,6 +549,8 @@
     "glycemicIndex": 0,
     "cholesterolMg": 0,
     "saturatedFatG": 1.1,
+    "fatG": 14,
+    "caloriesKcal": 164,
     "sodiumMg": 1,
     "sugarG": 1.2,
     "carbsG": 6,
@@ -472,6 +558,7 @@
     "fiberG": 3.5,
     "allergenTags": ["tree_nut"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 208, "vitamin_c_mg": 0, "calcium_mg": 76, "iron_mg": 1.1 },
     "servingDesc": "1 oz (~23 almonds)"
   },
   {
@@ -481,6 +568,8 @@
     "glycemicIndex": 0,
     "cholesterolMg": 0,
     "saturatedFatG": 1.7,
+    "fatG": 18.5,
+    "caloriesKcal": 185,
     "sodiumMg": 1,
     "sugarG": 0.7,
     "carbsG": 4,
@@ -488,6 +577,7 @@
     "fiberG": 2,
     "allergenTags": ["tree_nut"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 125, "vitamin_c_mg": 0, "calcium_mg": 28, "iron_mg": 0.8 },
     "servingDesc": "1 oz"
   },
   {
@@ -498,6 +588,8 @@
     "glycemicLoad": 8,
     "cholesterolMg": 29,
     "saturatedFatG": 4.9,
+    "fatG": 7.3,
+    "caloriesKcal": 137,
     "sodiumMg": 53,
     "sugarG": 14,
     "carbsG": 16,
@@ -505,6 +597,7 @@
     "fiberG": 0.5,
     "allergenTags": ["dairy", "egg"],
     "dietFlags": ["vegan_unsafe"],
+    "keyNutrients": { "potassium_mg": 110, "vitamin_c_mg": 0.5, "calcium_mg": 84, "iron_mg": 0.05 },
     "servingDesc": "1/2 cup"
   },
   {
@@ -515,6 +608,8 @@
     "glycemicLoad": 20,
     "cholesterolMg": 36,
     "saturatedFatG": 3.5,
+    "fatG": 14,
+    "caloriesKcal": 352,
     "sodiumMg": 300,
     "sugarG": 32,
     "carbsG": 51,
@@ -522,6 +617,7 @@
     "fiberG": 1.5,
     "allergenTags": ["dairy", "egg", "gluten"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 133, "vitamin_c_mg": 0, "calcium_mg": 33, "iron_mg": 1.4 },
     "servingDesc": "1 slice"
   },
   {
@@ -532,6 +628,8 @@
     "glycemicLoad": 16,
     "cholesterolMg": 0,
     "saturatedFatG": 0,
+    "fatG": 0,
+    "caloriesKcal": 140,
     "sodiumMg": 15,
     "sugarG": 26,
     "carbsG": 26,
@@ -539,6 +637,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 4, "vitamin_c_mg": 0, "calcium_mg": 8, "iron_mg": 0.1 },
     "servingDesc": "12 oz can"
   },
   {
@@ -549,6 +648,8 @@
     "glycemicLoad": 12,
     "cholesterolMg": 0,
     "saturatedFatG": 0,
+    "fatG": 0.5,
+    "caloriesKcal": 112,
     "sodiumMg": 2,
     "sugarG": 21,
     "carbsG": 26,
@@ -556,6 +657,7 @@
     "fiberG": 0.5,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 496, "vitamin_c_mg": 124, "calcium_mg": 27, "iron_mg": 0.5 },
     "servingDesc": "1 cup"
   },
   {
@@ -566,6 +668,8 @@
     "glycemicLoad": 5,
     "cholesterolMg": 0,
     "saturatedFatG": 0,
+    "fatG": 0.3,
+    "caloriesKcal": 95,
     "sodiumMg": 2,
     "sugarG": 19,
     "carbsG": 25,
@@ -573,6 +677,7 @@
     "fiberG": 4.4,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 195, "vitamin_c_mg": 8.4, "calcium_mg": 11, "iron_mg": 0.2 },
     "servingDesc": "1 medium"
   },
   {
@@ -583,6 +688,8 @@
     "glycemicLoad": 12,
     "cholesterolMg": 0,
     "saturatedFatG": 0.1,
+    "fatG": 0.4,
+    "caloriesKcal": 105,
     "sodiumMg": 1,
     "sugarG": 14,
     "carbsG": 27,
@@ -590,6 +697,7 @@
     "fiberG": 3.1,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 422, "vitamin_c_mg": 10, "calcium_mg": 6, "iron_mg": 0.3 },
     "servingDesc": "1 medium"
   },
   {
@@ -600,6 +708,8 @@
     "glycemicLoad": 22,
     "cholesterolMg": 0,
     "saturatedFatG": 0.7,
+    "fatG": 3,
+    "caloriesKcal": 220,
     "sodiumMg": 480,
     "sugarG": 6,
     "carbsG": 44,
@@ -607,6 +717,7 @@
     "fiberG": 3,
     "allergenTags": ["gluten"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 380, "vitamin_c_mg": 8, "calcium_mg": 60, "iron_mg": 2 },
     "servingDesc": "1 cup"
   },
   {
@@ -617,6 +728,8 @@
     "glycemicLoad": 25,
     "cholesterolMg": 60,
     "saturatedFatG": 9,
+    "fatG": 24,
+    "caloriesKcal": 460,
     "sodiumMg": 650,
     "sugarG": 2,
     "carbsG": 40,
@@ -624,6 +737,7 @@
     "fiberG": 2,
     "allergenTags": ["dairy", "gluten", "egg"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 150, "vitamin_c_mg": 0, "calcium_mg": 200, "iron_mg": 1.5 },
     "servingDesc": "1 cup"
   },
   {
@@ -633,6 +747,8 @@
     "glycemicIndex": 0,
     "cholesterolMg": 17,
     "saturatedFatG": 1.8,
+    "fatG": 3.3,
+    "caloriesKcal": 43,
     "sodiumMg": 185,
     "sugarG": 0,
     "carbsG": 0.1,
@@ -640,6 +756,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 35, "vitamin_c_mg": 0, "calcium_mg": 1, "iron_mg": 0.1 },
     "servingDesc": "1 slice cooked"
   },
   {
@@ -649,6 +766,8 @@
     "glycemicIndex": 0,
     "cholesterolMg": 25,
     "saturatedFatG": 3,
+    "fatG": 8.4,
+    "caloriesKcal": 96,
     "sodiumMg": 280,
     "sugarG": 0,
     "carbsG": 1,
@@ -656,6 +775,7 @@
     "fiberG": 0,
     "allergenTags": [],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 65, "vitamin_c_mg": 0, "calcium_mg": 10, "iron_mg": 0.3 },
     "servingDesc": "1 link"
   },
   {
@@ -665,6 +785,8 @@
     "glycemicIndex": null,
     "cholesterolMg": 90,
     "saturatedFatG": 1.5,
+    "fatG": 9,
+    "caloriesKcal": 160,
     "sodiumMg": 450,
     "sugarG": 0.5,
     "carbsG": 8,
@@ -672,6 +794,7 @@
     "fiberG": 0.5,
     "allergenTags": ["shellfish", "egg", "gluten"],
     "dietFlags": ["vegan_unsafe", "vegetarian_unsafe"],
+    "keyNutrients": { "potassium_mg": 200, "vitamin_c_mg": 1, "calcium_mg": 60, "iron_mg": 0.8 },
     "servingDesc": "1 cake"
   },
   {
@@ -681,6 +804,8 @@
     "glycemicIndex": 18,
     "cholesterolMg": 0,
     "saturatedFatG": 0.4,
+    "fatG": 8,
+    "caloriesKcal": 189,
     "sodiumMg": 6,
     "sugarG": 2,
     "carbsG": 8,
@@ -688,6 +813,7 @@
     "fiberG": 5,
     "allergenTags": ["soy"],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 676, "vitamin_c_mg": 9.7, "calcium_mg": 98, "iron_mg": 3.5 },
     "servingDesc": "1 cup"
   },
   {
@@ -698,6 +824,8 @@
     "glycemicLoad": 9,
     "cholesterolMg": 0,
     "saturatedFatG": 0.5,
+    "fatG": 1.5,
+    "caloriesKcal": 80,
     "sodiumMg": 150,
     "sugarG": 1,
     "carbsG": 14,
@@ -705,6 +833,7 @@
     "fiberG": 1.2,
     "allergenTags": [],
     "dietFlags": [],
+    "keyNutrients": { "potassium_mg": 40, "vitamin_c_mg": 0, "calcium_mg": 40, "iron_mg": 0.5 },
     "servingDesc": "1 slice"
   }
 ]

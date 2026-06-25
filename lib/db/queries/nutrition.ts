@@ -30,6 +30,11 @@ interface NutritionItemRow {
   glycemic_load: string | null;
   cholesterol_mg: string | null;
   saturated_fat_g: string | null;
+  fat_g: string | null;
+  calories_kcal: string | null;
+  carbs_g: string | null;
+  protein_g: string | null;
+  fiber_g: string | null;
   sodium_mg: string | null;
   sugar_g: string | null;
   allergen_tags: string[];
@@ -49,6 +54,11 @@ function toNutritionRowInput(row: NutritionItemRow): NutritionRowInput {
     allergenTags: row.allergen_tags ?? [],
     dietFlags: row.diet_flags ?? [],
     keyNutrients: row.key_nutrients ?? {},
+    caloriesKcal: row.calories_kcal == null ? null : Number(row.calories_kcal),
+    fatG: row.fat_g == null ? null : Number(row.fat_g),
+    carbsG: row.carbs_g == null ? null : Number(row.carbs_g),
+    proteinG: row.protein_g == null ? null : Number(row.protein_g),
+    fiberG: row.fiber_g == null ? null : Number(row.fiber_g),
   };
 }
 
@@ -61,7 +71,8 @@ export async function matchNutritionItem(detectedLabel: string): Promise<Nutriti
 
   const rows = await query<NutritionItemRow>(
     `SELECT id, canonical_name, aliases, glycemic_index, glycemic_load, cholesterol_mg,
-            saturated_fat_g, sodium_mg, sugar_g, allergen_tags, diet_flags, key_nutrients,
+            saturated_fat_g, fat_g, calories_kcal, carbs_g, protein_g, fiber_g,
+            sodium_mg, sugar_g, allergen_tags, diet_flags, key_nutrients,
             1 - (embedding <=> $1) AS similarity
      FROM nutrition_items
      ORDER BY embedding <=> $1

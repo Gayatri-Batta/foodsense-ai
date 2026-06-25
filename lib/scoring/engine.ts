@@ -30,6 +30,11 @@ export interface NutritionRowInput {
   allergenTags: string[];
   dietFlags: string[];
   keyNutrients: Record<string, number>;
+  caloriesKcal?: number | null;
+  fatG?: number | null;
+  carbsG?: number | null;
+  proteinG?: number | null;
+  fiberG?: number | null;
 }
 
 export interface RiskFlag {
