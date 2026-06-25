@@ -47,32 +47,45 @@ export default function ChatPanel({ scanId }: { scanId: string }) {
   }
 
   return (
-    <div className="border rounded flex flex-col h-80">
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+    <div className="rounded-2xl border border-black/5 bg-white shadow-sm flex flex-col h-80 overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
         {messages.length === 0 && (
-          <p className="text-sm text-gray-400">Ask a question about this scan, e.g. &quot;Is the rice safe for me?&quot;</p>
+          <p className="text-sm text-gray-400">
+            Ask a question about this scan, e.g. &quot;Is the rice safe for me?&quot;
+          </p>
         )}
         {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`text-sm rounded px-3 py-2 max-w-[85%] ${
-              m.role === "user" ? "bg-black text-white ml-auto" : "bg-gray-100 text-gray-800"
-            }`}
-          >
-            {m.content}
+          <div key={m.id} className={`flex items-end gap-2 ${m.role === "user" ? "justify-end" : ""}`}>
+            {m.role === "assistant" && (
+              <span className="w-6 h-6 rounded-full bg-brand-light text-xs flex items-center justify-center shrink-0">
+                🤖
+              </span>
+            )}
+            <div
+              className={`text-sm rounded-2xl px-3.5 py-2 max-w-[80%] ${
+                m.role === "user" ? "bg-brand text-white" : "bg-gray-100 text-gray-800"
+              }`}
+            >
+              {m.content}
+            </div>
           </div>
         ))}
+        {sending && <div className="text-xs text-gray-400 pl-8">Thinking...</div>}
         <div ref={bottomRef} />
       </div>
-      <form onSubmit={handleSend} className="border-t flex">
+      <form onSubmit={handleSend} className="border-t border-gray-100 flex items-center px-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a follow-up question..."
-          className="flex-1 px-3 py-2 text-sm outline-none"
+          className="flex-1 px-3 py-3 text-sm outline-none bg-transparent"
           disabled={sending}
         />
-        <button type="submit" disabled={sending} className="px-4 text-sm font-medium disabled:opacity-50">
+        <button
+          type="submit"
+          disabled={sending}
+          className="text-sm font-medium text-brand px-3 py-1.5 rounded-full hover:bg-brand-light transition-colors disabled:opacity-50"
+        >
           Send
         </button>
       </form>

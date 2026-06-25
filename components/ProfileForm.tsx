@@ -15,6 +15,13 @@ const RULE_KEYS = [
 
 const SEVERITIES: Severity[] = ["mild", "moderate", "severe"];
 
+const CATEGORY_META: Record<string, { icon: string; label: string }> = {
+  metabolic: { icon: "🩸", label: "Metabolic" },
+  cardiac: { icon: "❤️", label: "Cardiac" },
+  allergen: { icon: "🥜", label: "Allergens" },
+  lifestyle: { icon: "🌱", label: "Lifestyle" },
+};
+
 interface SelectedPreset {
   code: string;
   severity: Severity;
@@ -122,66 +129,78 @@ export default function ProfileForm({ onCreated }: { onCreated: (profileId: stri
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
+    <form onSubmit={handleSubmit} className="space-y-7">
       <div>
-        <label className="block text-sm font-medium mb-1">Profile name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Profile name</label>
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className="w-full rounded border px-3 py-2"
+          className="w-full max-w-sm rounded-lg border border-gray-200 px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand"
           required
         />
       </div>
 
-      {Object.entries(grouped).map(([category, items]) => (
-        <fieldset key={category} className="border rounded p-4">
-          <legend className="text-sm font-semibold capitalize px-1">{category}</legend>
-          <div className="space-y-2 mt-2">
-            {items.map((item) => {
-              const selected = item.code ? selectedPresets[item.code] : undefined;
-              return (
-                <div key={item.id} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(selected)}
-                    onChange={() => item.code && togglePreset(item.code)}
-                  />
-                  <span className="flex-1">{item.label}</span>
-                  {selected && (
-                    <select
-                      value={selected.severity}
-                      onChange={(e) => item.code && setPresetSeverity(item.code, e.target.value as Severity)}
-                      className="border rounded px-2 py-1 text-sm"
+      {Object.entries(grouped).map(([category, items]) => {
+        const meta = CATEGORY_META[category] ?? { icon: "🏷️", label: category };
+        return (
+          <div key={category}>
+            <p className="text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-1.5">
+              <span>{meta.icon}</span> {meta.label}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {items.map((item) => {
+                const selected = item.code ? selectedPresets[item.code] : undefined;
+                return (
+                  <div key={item.id} className="flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => item.code && togglePreset(item.code)}
+                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium border transition-colors ${
+                        selected
+                          ? "bg-brand text-white border-brand"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-brand/40"
+                      }`}
                     >
-                      {SEVERITIES.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-              );
-            })}
+                      {item.label}
+                    </button>
+                    {selected && (
+                      <select
+                        value={selected.severity}
+                        onChange={(e) => item.code && setPresetSeverity(item.code, e.target.value as Severity)}
+                        className="ml-1.5 border border-gray-200 rounded-full px-2 py-1 text-xs text-gray-600 bg-white"
+                      >
+                        {SEVERITIES.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </fieldset>
-      ))}
+        );
+      })}
 
-      <fieldset className="border rounded p-4">
-        <legend className="text-sm font-semibold px-1">Custom conditions</legend>
-        <div className="space-y-3 mt-2">
+      <div>
+        <p className="text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-1.5">
+          <span>✏️</span> Custom conditions
+        </p>
+        <div className="space-y-2.5">
           {customConditions.map((c, i) => (
-            <div key={i} className="flex flex-wrap items-center gap-2 border-b pb-2">
+            <div key={i} className="flex flex-wrap items-center gap-2 bg-gray-50 rounded-xl p-2.5">
               <input
                 placeholder="Condition name"
                 value={c.customLabel}
                 onChange={(e) => updateCustomCondition(i, { customLabel: e.target.value })}
-                className="border rounded px-2 py-1 flex-1 min-w-[140px]"
+                className="border border-gray-200 rounded-lg px-2.5 py-1.5 flex-1 min-w-[140px] text-sm bg-white"
               />
               <select
                 value={c.ruleKey}
                 onChange={(e) => updateCustomCondition(i, { ruleKey: e.target.value })}
-                className="border rounded px-2 py-1"
+                className="border border-gray-200 rounded-lg px-2.5 py-1.5 text-sm bg-white"
               >
                 {RULE_KEYS.map((rk) => (
                   <option key={rk.value} value={rk.value}>
@@ -194,13 +213,13 @@ export default function ProfileForm({ onCreated }: { onCreated: (profileId: stri
                   placeholder="allergen tag e.g. sesame"
                   value={c.allergenTag}
                   onChange={(e) => updateCustomCondition(i, { allergenTag: e.target.value })}
-                  className="border rounded px-2 py-1"
+                  className="border border-gray-200 rounded-lg px-2.5 py-1.5 text-sm bg-white"
                 />
               )}
               <select
                 value={c.severity}
                 onChange={(e) => updateCustomCondition(i, { severity: e.target.value as Severity })}
-                className="border rounded px-2 py-1"
+                className="border border-gray-200 rounded-lg px-2.5 py-1.5 text-sm bg-white"
               >
                 {SEVERITIES.map((s) => (
                   <option key={s} value={s}>
@@ -208,23 +227,27 @@ export default function ProfileForm({ onCreated }: { onCreated: (profileId: stri
                   </option>
                 ))}
               </select>
-              <button type="button" onClick={() => removeCustomCondition(i)} className="text-red-600 text-sm">
-                Remove
+              <button
+                type="button"
+                onClick={() => removeCustomCondition(i)}
+                className="text-red-500 text-sm font-medium px-1"
+              >
+                ✕
               </button>
             </div>
           ))}
-          <button type="button" onClick={addCustomCondition} className="text-sm text-blue-600">
+          <button type="button" onClick={addCustomCondition} className="text-sm font-medium text-brand">
             + Add custom condition
           </button>
         </div>
-      </fieldset>
+      </div>
 
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
+        className="bg-brand hover:bg-brand-dark text-white rounded-full px-6 py-2.5 font-medium transition-colors disabled:opacity-50"
       >
         {submitting ? "Creating..." : "Create profile"}
       </button>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import ProfileForm from "../../components/ProfileForm";
 import type { HealthProfile } from "../../lib/types";
 
@@ -30,37 +29,46 @@ export default function ProfilesPage() {
   }
 
   return (
-    <main className="p-8 max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Health Profiles</h1>
-        <Link href="/" className="text-sm text-blue-600">
-          Back home
-        </Link>
+    <main className="max-w-2xl mx-auto px-6 py-12 space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Health Profiles</h1>
+        <p className="text-gray-500 mt-1">Switch profiles to see scores update instantly on any open scan.</p>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {profiles.map((p) => (
-          <div key={p.id} className="flex items-center justify-between border rounded p-3">
-            <span className={p.is_active ? "font-semibold" : ""}>{p.label}</span>
+          <div
+            key={p.id}
+            className={`flex items-center justify-between rounded-2xl border p-4 transition-colors ${
+              p.is_active ? "border-brand/30 bg-brand-light" : "border-black/5 bg-white"
+            }`}
+          >
+            <span className="font-medium">{p.label}</span>
             {p.is_active ? (
-              <span className="text-xs text-green-700 bg-green-100 rounded px-2 py-1">Active</span>
+              <span className="text-xs font-semibold text-brand bg-white rounded-full px-3 py-1 border border-brand/20">
+                ✓ Active
+              </span>
             ) : (
               <button
                 onClick={() => activate(p.id)}
                 disabled={switching}
-                className="text-sm text-blue-600 disabled:opacity-50"
+                className="text-sm font-medium text-brand hover:underline disabled:opacity-50"
               >
                 Switch to this profile
               </button>
             )}
           </div>
         ))}
-        {profiles.length === 0 && <p className="text-gray-500 text-sm">No profiles yet.</p>}
+        {profiles.length === 0 && (
+          <p className="text-gray-400 text-sm bg-white border border-black/5 rounded-2xl p-6 text-center">
+            No profiles yet — create your first one below.
+          </p>
+        )}
       </div>
 
       {showForm ? (
-        <section>
-          <h2 className="text-lg font-semibold mb-3">New profile</h2>
+        <section className="bg-white rounded-2xl border border-black/5 shadow-sm p-6">
+          <h2 className="text-lg font-semibold mb-4">New profile</h2>
           <ProfileForm
             onCreated={() => {
               setShowForm(false);
@@ -69,7 +77,10 @@ export default function ProfilesPage() {
           />
         </section>
       ) : (
-        <button onClick={() => setShowForm(true)} className="text-sm text-blue-600">
+        <button
+          onClick={() => setShowForm(true)}
+          className="text-sm font-medium text-brand border border-brand/30 rounded-full px-4 py-2 hover:bg-brand-light transition-colors"
+        >
           + Add another profile
         </button>
       )}

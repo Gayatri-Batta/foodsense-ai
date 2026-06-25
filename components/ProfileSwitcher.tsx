@@ -36,13 +36,13 @@ export default function ProfileSwitcher({ onSwitched }: Props) {
   if (profiles.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-600">Active profile:</span>
+    <div className="flex items-center gap-2 bg-white border border-black/5 rounded-full pl-3 pr-1.5 py-1.5 shadow-sm">
+      <span className="text-xs text-gray-400 hidden sm:inline">Profile</span>
       <select
         value={active?.id ?? ""}
         onChange={(e) => handleChange(e.target.value)}
         disabled={switching}
-        className="border rounded px-2 py-1 text-sm"
+        className="border-none bg-transparent text-sm font-medium focus:outline-none"
       >
         {profiles.map((p) => (
           <option key={p.id} value={p.id}>
@@ -50,7 +50,9 @@ export default function ProfileSwitcher({ onSwitched }: Props) {
           </option>
         ))}
       </select>
-      {switching && <span className="text-xs text-gray-500">Re-scoring...</span>}
+      {switching && (
+        <span className="w-3.5 h-3.5 border-2 border-brand border-t-transparent rounded-full animate-spin mr-1" />
+      )}
     </div>
   );
 }
