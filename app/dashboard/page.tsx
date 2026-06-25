@@ -14,7 +14,7 @@ const MICRONUTRIENT_LABELS: Record<string, { label: string; unit: string }> = {
 function formatDateLabel(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
   const date = new Date(year, month - 1, day);
-  return date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+  return date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric", year: "numeric" });
 }
 
 function shiftDate(dateStr: string, deltaDays: number): string {
@@ -61,9 +61,7 @@ export default function DashboardPage() {
         >
           &larr; Prev
         </button>
-        <span className="font-semibold">
-          {formatDateLabel(date)} {isToday && <span className="text-brand">(today)</span>}
-        </span>
+        <span className="font-semibold">{formatDateLabel(date)}</span>
         <button
           onClick={() => setDate((d) => shiftDate(d, 1))}
           disabled={isToday}
