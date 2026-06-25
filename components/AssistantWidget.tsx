@@ -15,7 +15,9 @@ const SUGGESTIONS = [
 
 // Floating popup instead of its own nav tab/page — a separate tab made
 // navigation feel heavier than a quick question warrants. Lives only on the
-// home page, collapsed by default, expands in place.
+// home page, collapsed by default, expands in place. The name label next to
+// the icon (rather than auto-opening on every visit) is how it stays
+// noticeable without being intrusive.
 export default function AssistantWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,22 +60,33 @@ export default function AssistantWidget() {
       {open && (
         <div className="w-80 sm:w-96 rounded-2xl border border-black/5 bg-white shadow-xl flex flex-col h-[26rem] overflow-hidden animate-fade-in">
           <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 bg-brand-light">
-            <div>
-              <p className="font-semibold text-sm">Assistant</p>
-              <p className="text-xs text-gray-500">Nothing here is saved or added to your dashboard.</p>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🌿</span>
+              <p className="font-semibold text-sm">Sage</p>
             </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none px-1"
-              aria-label="Close assistant"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-1">
+              {messages.length > 0 && (
+                <button
+                  onClick={() => setMessages([])}
+                  className="text-xs font-medium text-gray-500 hover:text-gray-700 px-2 py-1 rounded-full hover:bg-white/60 transition-colors"
+                  aria-label="Clear chat"
+                >
+                  Clear
+                </button>
+              )}
+              <button
+                onClick={() => setOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-lg leading-none px-1"
+                aria-label="Close Sage"
+              >
+                ×
+              </button>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
             {messages.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center text-center gap-3 px-4">
-                <span className="text-2xl">🤖</span>
+                <span className="text-2xl">🌿</span>
                 <p className="text-sm text-gray-400">Ask anything, try one below or type your own.</p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {SUGGESTIONS.map((s) => (
@@ -96,7 +109,7 @@ export default function AssistantWidget() {
               <div key={i} className={`flex items-end gap-2 ${m.role === "user" ? "justify-end" : ""}`}>
                 {m.role === "assistant" && (
                   <span className="w-6 h-6 rounded-full bg-brand-light text-xs flex items-center justify-center shrink-0">
-                    🤖
+                    🌿
                   </span>
                 )}
                 <div
@@ -131,14 +144,21 @@ export default function AssistantWidget() {
         </div>
       )}
 
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-14 h-14 rounded-full bg-brand text-white shadow-lg flex items-center justify-center text-2xl hover:bg-brand-dark transition-colors"
-        title="Ask the assistant"
-        aria-label="Ask the assistant"
-      >
-        {open ? "×" : "🤖"}
-      </button>
+      <div className="flex items-center gap-2">
+        {!open && (
+          <span className="bg-white border border-black/5 rounded-full shadow-md px-3.5 py-2 text-sm font-medium text-gray-700 animate-fade-in">
+            Chat with Sage
+          </span>
+        )}
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="w-14 h-14 rounded-full bg-brand text-white shadow-lg flex items-center justify-center text-2xl hover:bg-brand-dark transition-colors shrink-0"
+          title="Chat with Sage"
+          aria-label="Chat with Sage"
+        >
+          {open ? "×" : "🌿"}
+        </button>
+      </div>
     </div>
   );
 }
