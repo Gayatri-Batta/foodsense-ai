@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../lib/types";
 
+const SUGGESTIONS = ["What's the riskiest item here?", "Is the rice safe for me?", "Suggest a swap for the dessert"];
+
 export default function ChatPanel({ scanId }: { scanId: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch(`/api/scans/${scanId}/chat`)
@@ -50,9 +53,25 @@ export default function ChatPanel({ scanId }: { scanId: string }) {
     <div className="rounded-2xl border border-black/5 bg-white shadow-sm flex flex-col h-80 overflow-hidden">
       <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
         {messages.length === 0 && (
-          <p className="text-sm text-gray-400">
-            Ask a question about this scan, e.g. &quot;Is the rice safe for me?&quot;
-          </p>
+          <div className="h-full flex flex-col items-center justify-center text-center gap-3 px-4">
+            <span className="text-2xl">💬</span>
+            <p className="text-sm text-gray-400">Ask anything about this scan — try one below, or type your own.</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => {
+                    setInput(s);
+                    inputRef.current?.focus();
+                  }}
+                  className="text-xs font-medium text-brand bg-brand-light rounded-full px-3 py-1.5 hover:bg-brand/10 transition-colors"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
         {messages.map((m) => (
           <div key={m.id} className={`flex items-end gap-2 ${m.role === "user" ? "justify-end" : ""}`}>
@@ -73,11 +92,12 @@ export default function ChatPanel({ scanId }: { scanId: string }) {
         {sending && <div className="text-xs text-gray-400 pl-8">Thinking...</div>}
         <div ref={bottomRef} />
       </div>
-      <form onSubmit={handleSend} className="border-t border-gray-100 flex items-center px-2">
+      <form onSubmit={handleSend} className="border-t border-gray-100 bg-gray-50 flex items-center px-2">
         <input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a follow-up question..."
+          placeholder="Type your question here..."
           className="flex-1 px-3 py-3 text-sm outline-none bg-transparent"
           disabled={sending}
         />
