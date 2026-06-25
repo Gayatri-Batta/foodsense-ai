@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileForm from "../components/ProfileForm";
 import PendingConsumptionBanner from "../components/PendingConsumptionBanner";
+import AssistantWidget from "../components/AssistantWidget";
 import type { HealthProfile } from "../lib/types";
 
 const FEATURES = [
@@ -172,6 +173,8 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      <AssistantWidget />
     </main>
   );
 }
