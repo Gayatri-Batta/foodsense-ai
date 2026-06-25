@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import ImageDotOverlay from "../../../components/ImageDotOverlay";
 import ItemTooltipCard from "../../../components/ItemTooltipCard";
-import ProfileSwitcher from "../../../components/ProfileSwitcher";
 import ChatPanel from "../../../components/ChatPanel";
 import type { Scan, ScanItem } from "../../../lib/types";
 
@@ -40,6 +39,11 @@ export default function ScanPage() {
     setRescoring(false);
   }
 
+  useEffect(() => {
+    window.addEventListener("profile-switched", handleProfileSwitched);
+    return () => window.removeEventListener("profile-switched", handleProfileSwitched);
+  }, [scanId]);
+
   async function setConsumed(itemId: string, consumed: boolean | null) {
     setItems((prev) => prev.map((it) => (it.id === itemId ? { ...it, consumed } : it)));
     await fetch(`/api/scan-items/${itemId}/consumption`, {
@@ -59,12 +63,9 @@ export default function ScanPage() {
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-8 space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <Link href="/" className="text-sm font-medium text-gray-500 hover:text-brand transition-colors">
-          ← New scan
-        </Link>
-        <ProfileSwitcher onSwitched={handleProfileSwitched} />
-      </div>
+      <Link href="/" className="text-sm font-medium text-gray-500 hover:text-brand transition-colors">
+        ← New scan
+      </Link>
 
       {rescoring && (
         <p className="text-sm text-brand flex items-center gap-2">

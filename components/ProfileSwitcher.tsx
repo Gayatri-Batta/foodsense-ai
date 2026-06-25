@@ -29,6 +29,10 @@ export default function ProfileSwitcher({ onSwitched }: Props) {
     await loadProfiles();
     setSwitching(false);
     onSwitched?.(profileId);
+    // Lives in the navbar now, rendered once at the layout level — pages that
+    // care about a switch (e.g. the scan view re-scoring its items) listen
+    // for this instead of getting a direct callback prop.
+    window.dispatchEvent(new CustomEvent("profile-switched", { detail: profileId }));
   }
 
   const active = profiles.find((p) => p.is_active);

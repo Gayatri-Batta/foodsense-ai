@@ -125,16 +125,6 @@ export default function Home() {
         <section className="space-y-5 animate-fade-in">
           <PendingConsumptionBanner />
 
-          <div className="flex items-center justify-between rounded-2xl bg-white border border-black/5 shadow-sm p-4 sm:p-5">
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide">Active profile</p>
-              <p className="font-semibold text-lg">{activeProfile.label}</p>
-            </div>
-            <a href="/profiles" className="text-sm font-medium text-brand hover:underline">
-              Manage profiles →
-            </a>
-          </div>
-
           <div
             onDragOver={(e) => {
               e.preventDefault();
