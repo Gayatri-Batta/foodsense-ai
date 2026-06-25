@@ -204,12 +204,19 @@ interface FrequentlyEatenQueryRow {
   key_nutrients: Record<string, number>;
 }
 
-// The "past eating habits" half of the swap-suggestion feature: which
-// confirmed-eaten foods come up most often for this user, most frequent
-// first. The caller re-scores each against the live profile rather than
-// trusting whatever color was stored historically, since the profile may
-// have changed since those scans.
-export async function listFrequentlyEatenNutritionItems(userId: string, limit: number): Promise<FrequentlyEatenItem[]> {
+// The "past eating habits" half of the swap-suggestion feature: confirmed-eaten
+// foods that have been scored red at least `minOccurrences` times since
+// `sinceIso`, most frequent first. Gating on red + recurring (rather than any
+// non-green item, any time) is what keeps the suggestion occasional instead
+// of showing on every visit — most days won't have a food that qualifies.
+// The caller re-scores each against the live profile rather than trusting
+// whatever color was stored historically, since the profile may have changed.
+export async function listRecurringRedNutritionItems(
+  userId: string,
+  sinceIso: string,
+  minOccurrences: number,
+  limit: number,
+): Promise<FrequentlyEatenItem[]> {
   const rows = await query<FrequentlyEatenQueryRow>(
     `SELECT n.id, n.canonical_name, n.category, COUNT(*) AS times_eaten,
             n.glycemic_index, n.glycemic_load, n.cholesterol_mg, n.saturated_fat_g, n.fat_g,
@@ -218,11 +225,12 @@ export async function listFrequentlyEatenNutritionItems(userId: string, limit: n
      FROM scan_items si
      JOIN scans s ON s.id = si.scan_id
      JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
-     WHERE s.user_id = $1 AND si.consumed = true
+     WHERE s.user_id = $1 AND si.consumed = true AND si.color = 'red' AND s.created_at >= $2
      GROUP BY n.id
+     HAVING COUNT(*) >= $3
      ORDER BY times_eaten DESC
-     LIMIT $2`,
-    [userId, limit],
+     LIMIT $4`,
+    [userId, sinceIso, minOccurrences, limit],
   );
 
   return rows.map((r) => ({
@@ -247,6 +255,22 @@ export async function listFrequentlyEatenNutritionItems(userId: string, limit: n
       fiberG: r.fiber_g == null ? null : Number(r.fiber_g),
     },
   }));
+}
+
+// Per-item swap gate: has this specific nutrition item been scored red at
+// least this many times (across any of the user's scans, confirmed or not)
+// since the given cutoff? Counting any scan status (not just confirmed-eaten)
+// because the swap is about exposure to the risky item, not just settled
+// intake — a photographed-but-skipped plate still represents a real pattern.
+export async function countRedOccurrencesSince(userId: string, nutritionItemId: string, sinceIso: string): Promise<number> {
+  const rows = await query<{ count: string }>(
+    `SELECT COUNT(*) AS count
+     FROM scan_items si
+     JOIN scans s ON s.id = si.scan_id
+     WHERE s.user_id = $1 AND si.matched_nutrition_item_id = $2 AND si.color = 'red' AND s.created_at >= $3`,
+    [userId, nutritionItemId, sinceIso],
+  );
+  return Number(rows[0]?.count ?? 0);
 }
 
 export interface DailyNutritionTotals {
@@ -325,6 +349,59 @@ export async function listDailyNutritionItems(userId: string, dateStr: string): 
     sodiumMg: r.sodium_mg == null ? null : Number(r.sodium_mg),
     cholesterolMg: r.cholesterol_mg == null ? null : Number(r.cholesterol_mg),
     keyNutrients: r.key_nutrients ?? {},
+  }));
+}
+
+export interface DailyTotalsRow {
+  date: string;
+  totals: DailyNutritionTotals;
+}
+
+interface DailyTotalsQueryRow {
+  day: string;
+  calories_kcal: string | null;
+  carbs_g: string | null;
+  protein_g: string | null;
+  fat_g: string | null;
+  fiber_g: string | null;
+  sugar_g: string | null;
+  sodium_mg: string | null;
+  cholesterol_mg: string | null;
+}
+
+// One row per day with confirmed-eaten data, summed server-side (unlike the
+// single-day dashboard query, there's no need for JS-side micronutrient
+// merging here since the balance nudge only looks at macro/sodium totals).
+// Used to build a personal baseline, comparing today against the user's own
+// recent average rather than a generic calorie target.
+export async function listDailyTotalsSince(userId: string, sinceIso: string): Promise<DailyTotalsRow[]> {
+  const rows = await query<DailyTotalsQueryRow>(
+    `SELECT s.created_at::date::text AS day,
+            SUM(n.calories_kcal) AS calories_kcal, SUM(n.carbs_g) AS carbs_g,
+            SUM(n.protein_g) AS protein_g, SUM(n.fat_g) AS fat_g,
+            SUM(n.fiber_g) AS fiber_g, SUM(n.sugar_g) AS sugar_g,
+            SUM(n.sodium_mg) AS sodium_mg, SUM(n.cholesterol_mg) AS cholesterol_mg
+     FROM scan_items si
+     JOIN scans s ON s.id = si.scan_id
+     JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
+     WHERE s.user_id = $1 AND si.consumed = true AND s.created_at >= $2
+     GROUP BY day
+     ORDER BY day`,
+    [userId, sinceIso],
+  );
+
+  return rows.map((r) => ({
+    date: r.day,
+    totals: {
+      caloriesKcal: Number(r.calories_kcal ?? 0),
+      carbsG: Number(r.carbs_g ?? 0),
+      proteinG: Number(r.protein_g ?? 0),
+      fatG: Number(r.fat_g ?? 0),
+      fiberG: Number(r.fiber_g ?? 0),
+      sugarG: Number(r.sugar_g ?? 0),
+      sodiumMg: Number(r.sodium_mg ?? 0),
+      cholesterolMg: Number(r.cholesterol_mg ?? 0),
+    },
   }));
 }
 

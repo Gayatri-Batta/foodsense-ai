@@ -1,5 +1,11 @@
 import { scoreItem, type ConditionInput, type NutritionRowInput, type RiskFlag, type Flag } from "../scoring/engine";
 
+// Swap suggestions are deliberately occasional, not shown on every flagged
+// item. They only surface for a clear, repeated pattern (red, not just
+// yellow, and recurring) rather than a single one-off occurrence.
+export const SWAP_RECURRENCE_WINDOW_DAYS = 14;
+export const SWAP_MIN_RECURRENCES = 2;
+
 export interface SwapCandidate {
   id: string;
   canonicalName: string;

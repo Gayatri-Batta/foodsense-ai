@@ -41,6 +41,7 @@ export default function DashboardPage() {
   const [date, setDate] = useState(todayUtc());
   const [data, setData] = useState<DailyNutritionResponse | null>(null);
   const [swapData, setSwapData] = useState<SwapSuggestionResponse | null>(null);
+  const [nudge, setNudge] = useState<string | null>(null);
 
   useEffect(() => {
     setData(null);
@@ -55,6 +56,12 @@ export default function DashboardPage() {
       .then((d) => setSwapData(d));
   }, []);
 
+  useEffect(() => {
+    fetch("/api/nutrition/balance-nudge")
+      .then((r) => r.json())
+      .then((d) => setNudge(d.nudge ?? null));
+  }, []);
+
   const isToday = date === todayUtc();
 
   return (
@@ -65,6 +72,16 @@ export default function DashboardPage() {
           Calories, macros, and micronutrients from items you&apos;ve confirmed eating that day.
         </p>
       </div>
+
+      {nudge && (
+        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 flex gap-3">
+          <span className="text-xl shrink-0">💡</span>
+          <div>
+            <p className="text-xs font-medium text-blue-700 uppercase tracking-wide mb-0.5">Today looks different</p>
+            <p className="text-sm text-blue-800">{nudge}</p>
+          </div>
+        </div>
+      )}
 
       {swapData?.suggestion && swapData.basedOn && (
         <div className="rounded-2xl border border-green-100 bg-green-50 p-4 flex gap-3">
