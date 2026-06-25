@@ -9,6 +9,18 @@ export interface ScanRow {
   image_width: number | null;
   image_height: number | null;
   status: string;
+  created_at: string;
+}
+
+export interface ScanSummaryRow {
+  id: string;
+  image_url: string;
+  status: string;
+  created_at: string;
+  profile_label: string;
+  item_count: number;
+  avg_risk_score: number | null;
+  worst_color: "green" | "yellow" | "red" | null;
 }
 
 export interface ScanItemRow {
@@ -76,6 +88,50 @@ export async function insertScanItem(
     ],
   );
   return rows[0];
+}
+
+interface ScanSummaryQueryRow {
+  id: string;
+  image_url: string;
+  status: string;
+  created_at: string;
+  profile_label: string;
+  item_count: string;
+  avg_risk_score: string | null;
+  worst_color_rank: number | null;
+}
+
+const COLOR_BY_RANK = ["green", "yellow", "red"] as const;
+
+// Meal history: one row per scan, with item count / average risk / worst
+// color aggregated from scan_items so the list view doesn't need a second
+// round-trip per scan. "Worst color" mirrors the scoring engine's own
+// worst-flag-wins rule (red > yellow > green) via a rank-then-max trick.
+export async function listScansForUser(userId: string): Promise<ScanSummaryRow[]> {
+  const rows = await query<ScanSummaryQueryRow>(
+    `SELECT s.id, s.image_url, s.status, s.created_at, hp.label AS profile_label,
+            COUNT(si.id) AS item_count,
+            AVG(si.risk_score) AS avg_risk_score,
+            MAX(CASE si.color WHEN 'red' THEN 2 WHEN 'yellow' THEN 1 WHEN 'green' THEN 0 ELSE NULL END) AS worst_color_rank
+     FROM scans s
+     JOIN health_profiles hp ON hp.id = s.health_profile_id
+     LEFT JOIN scan_items si ON si.scan_id = s.id
+     WHERE s.user_id = $1
+     GROUP BY s.id, s.image_url, s.status, s.created_at, hp.label
+     ORDER BY s.created_at DESC`,
+    [userId],
+  );
+
+  return rows.map((r) => ({
+    id: r.id,
+    image_url: r.image_url,
+    status: r.status,
+    created_at: r.created_at,
+    profile_label: r.profile_label,
+    item_count: Number(r.item_count),
+    avg_risk_score: r.avg_risk_score == null ? null : Number(r.avg_risk_score),
+    worst_color: r.worst_color_rank == null ? null : COLOR_BY_RANK[r.worst_color_rank],
+  }));
 }
 
 export async function getScanItems(scanId: string): Promise<ScanItemRow[]> {

@@ -49,6 +49,17 @@ export interface Scan {
   status: string;
 }
 
+export interface ScanSummary {
+  id: string;
+  image_url: string;
+  status: string;
+  created_at: string;
+  profile_label: string;
+  item_count: number;
+  avg_risk_score: number | null;
+  worst_color: Color | null;
+}
+
 export interface ChatMessage {
   id: string;
   scan_id: string;

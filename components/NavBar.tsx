@@ -14,6 +14,9 @@ export default function NavBar() {
           <Link href="/" className="hover:text-brand transition-colors">
             Scan
           </Link>
+          <Link href="/history" className="hover:text-brand transition-colors">
+            History
+          </Link>
           <Link href="/profiles" className="hover:text-brand transition-colors">
             Profiles
           </Link>

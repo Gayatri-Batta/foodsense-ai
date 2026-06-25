@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { getOrCreateUserId } from "../../../lib/auth";
 import { getActiveProfile, getProfileConditions } from "../../../lib/db/queries/profiles";
-import { createScan, insertScanItem, setScanStatus } from "../../../lib/db/queries/scans";
+import { createScan, insertScanItem, listScansForUser, setScanStatus } from "../../../lib/db/queries/scans";
 import { matchNutritionItem } from "../../../lib/db/queries/nutrition";
 import { detectFoodItems } from "../../../lib/ai/detectFoodItems";
 import { scoreItem } from "../../../lib/scoring/engine";
+
+// Meal history: every past scan for the current user, newest first, with
+// per-scan aggregates (item count, avg risk, worst color) for the list view.
+export async function GET() {
+  const userId = await getOrCreateUserId();
+  const scans = await listScansForUser(userId);
+  return NextResponse.json({ scans });
+}
 
 // Creates a scan end-to-end: upload image -> Bedrock detection -> pgvector
 // nutrition match (with fallback tiers) -> deterministic scoring -> persist.
