@@ -37,6 +37,7 @@ export interface ScanItem {
   risk_score: string | number | null;
   reasoning: string | null;
   risk_breakdown: RiskFlag[] | null;
+  consumed: boolean | null;
 }
 
 export interface Scan {
@@ -100,6 +101,15 @@ export interface DailyNutritionResponse {
   totals: DailyNutritionTotals;
   micronutrients: Record<string, number>;
   items: DailyNutritionItem[];
+}
+
+export interface PendingConsumptionItem {
+  id: string;
+  scanId: string;
+  scanImageUrl: string;
+  scanCreatedAt: string;
+  detectedLabel: string;
+  canonicalName: string | null;
 }
 
 export interface ProfileConditionSelection {

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileForm from "../components/ProfileForm";
+import PendingConsumptionBanner from "../components/PendingConsumptionBanner";
 import type { HealthProfile } from "../lib/types";
 
 const FEATURES = [
@@ -122,6 +123,8 @@ export default function Home() {
         </section>
       ) : (
         <section className="space-y-5 animate-fade-in">
+          <PendingConsumptionBanner />
+
           <div className="flex items-center justify-between rounded-2xl bg-white border border-black/5 shadow-sm p-4 sm:p-5">
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wide">Active profile</p>

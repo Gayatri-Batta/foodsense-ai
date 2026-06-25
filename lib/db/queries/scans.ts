@@ -36,6 +36,7 @@ export interface ScanItemRow {
   risk_score: number | null;
   reasoning: string | null;
   risk_breakdown: RiskFlag[] | null;
+  consumed: boolean | null;
 }
 
 export async function createScan(userId: string, healthProfileId: string, imageUrl: string, width: number, height: number): Promise<ScanRow> {
@@ -213,11 +214,12 @@ interface DailyNutritionQueryRow {
   key_nutrients: Record<string, number> | null;
 }
 
-// Daily nutrition dashboard: every matched scan_item for the user on a given
-// UTC calendar day, with the raw per-item nutrition still attached so totals
-// (incl. JSONB micronutrients) can be summed in JS rather than fighting
-// jsonb_each aggregation in SQL. Unmatched items have no nutrition row and
-// are excluded from totals — same convention as the scoring engine.
+// Daily nutrition dashboard: every matched, confirmed-eaten scan_item for the
+// user on a given UTC calendar day, with the raw per-item nutrition still
+// attached so totals (incl. JSONB micronutrients) can be summed in JS rather
+// than fighting jsonb_each aggregation in SQL. Unmatched items have no
+// nutrition row, and unconfirmed/skipped items have consumed != true — both
+// are excluded from totals so the dashboard only reflects what was actually eaten.
 export async function listDailyNutritionItems(userId: string, dateStr: string): Promise<DailyNutritionItem[]> {
   const rows = await query<DailyNutritionQueryRow>(
     `SELECT s.id AS scan_id, s.created_at AS scan_created_at, si.detected_label,
@@ -226,7 +228,7 @@ export async function listDailyNutritionItems(userId: string, dateStr: string): 
      FROM scans s
      JOIN scan_items si ON si.scan_id = s.id
      JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
-     WHERE s.user_id = $1 AND s.created_at::date = $2::date
+     WHERE s.user_id = $1 AND s.created_at::date = $2::date AND si.consumed = true
      ORDER BY s.created_at`,
     [userId, dateStr],
   );
@@ -246,6 +248,60 @@ export async function listDailyNutritionItems(userId: string, dateStr: string): 
     cholesterolMg: r.cholesterol_mg == null ? null : Number(r.cholesterol_mg),
     keyNutrients: r.key_nutrients ?? {},
   }));
+}
+
+export interface PendingConsumptionItem {
+  id: string;
+  scanId: string;
+  scanImageUrl: string;
+  scanCreatedAt: string;
+  detectedLabel: string;
+  canonicalName: string | null;
+}
+
+interface PendingConsumptionQueryRow {
+  id: string;
+  scan_id: string;
+  scan_image_url: string;
+  scan_created_at: string;
+  detected_label: string;
+  canonical_name: string | null;
+}
+
+// "Confirm what you ate" review queue: every detected item the user hasn't
+// yet said yes/no to, across all their scans, newest first. Surfaced as a
+// banner the next time they open the app — confirming right after the scan
+// itself isn't always possible (plans change, they skip the unhealthy item).
+export async function listPendingConsumptionItems(userId: string): Promise<PendingConsumptionItem[]> {
+  const rows = await query<PendingConsumptionQueryRow>(
+    `SELECT si.id, si.scan_id, s.image_url AS scan_image_url, s.created_at AS scan_created_at,
+            si.detected_label, n.canonical_name
+     FROM scan_items si
+     JOIN scans s ON s.id = si.scan_id
+     LEFT JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
+     WHERE s.user_id = $1 AND si.consumed IS NULL
+     ORDER BY s.created_at DESC`,
+    [userId],
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    scanId: r.scan_id,
+    scanImageUrl: r.scan_image_url,
+    scanCreatedAt: r.scan_created_at,
+    detectedLabel: r.detected_label,
+    canonicalName: r.canonical_name,
+  }));
+}
+
+// Ownership-checked so one user can't flip another's items via a guessed id.
+export async function setScanItemConsumed(scanItemId: string, userId: string, consumed: boolean | null): Promise<boolean> {
+  const rows = await query<{ id: string }>(
+    `UPDATE scan_items SET consumed = $1
+     WHERE id = $2 AND scan_id IN (SELECT id FROM scans WHERE user_id = $3)
+     RETURNING id`,
+    [consumed, scanItemId, userId],
+  );
+  return rows.length > 0;
 }
 
 export async function updateScanItemScore(

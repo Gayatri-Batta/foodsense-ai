@@ -49,7 +49,9 @@ export default function DashboardPage() {
     <main className="max-w-3xl mx-auto px-6 py-12 space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Daily Nutrition</h1>
-        <p className="text-gray-500 mt-1">Calories, macros, and micronutrients added up across the day&apos;s scans.</p>
+        <p className="text-gray-500 mt-1">
+          Calories, macros, and micronutrients from items you&apos;ve confirmed eating that day.
+        </p>
       </div>
 
       <div className="flex items-center justify-between rounded-2xl border border-black/5 bg-white px-4 py-3">
@@ -76,7 +78,8 @@ export default function DashboardPage() {
       {data && data.items.length === 0 && (
         <div className="rounded-2xl border border-black/5 bg-white p-10 text-center space-y-3">
           <div className="text-3xl">📊</div>
-          <p className="text-gray-500">No meals logged on this day yet.</p>
+          <p className="text-gray-500">No confirmed meals on this day yet.</p>
+          <p className="text-sm text-gray-400">Scan a meal, then mark each item as eaten or skipped.</p>
           <Link href="/" className="inline-block text-sm font-medium text-brand hover:underline">
             Scan a meal →
           </Link>

@@ -111,9 +111,18 @@ CREATE TABLE IF NOT EXISTS scan_items (
   risk_score NUMERIC,                  -- 0-100, color is bucketed from this
   reasoning TEXT,
   risk_breakdown JSONB,                -- [{"rule":"glycemic","flag":"red","detail":"..."}, ...]
+  consumed BOOLEAN,                    -- NULL = not yet confirmed, true = eaten, false = skipped
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS scan_items_scan_id_idx ON scan_items(scan_id);
+-- Added after scan_items was already live in production.
+ALTER TABLE scan_items ADD COLUMN IF NOT EXISTS consumed BOOLEAN;
+-- One-time backfill: items detected before this confirm-what-you-ate feature
+-- shipped are treated as confirmed-eaten so existing history/dashboard data
+-- doesn't vanish. The fixed cutoff means re-running this file never touches
+-- items created after the feature shipped, no matter how many times it runs.
+UPDATE scan_items SET consumed = true
+WHERE consumed IS NULL AND created_at < '2026-06-25T12:00:00Z';
 
 -- ============ CHAT ============
 CREATE TABLE IF NOT EXISTS chat_messages (
