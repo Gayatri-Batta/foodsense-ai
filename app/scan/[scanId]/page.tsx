@@ -6,7 +6,7 @@ import Link from "next/link";
 import ImageDotOverlay from "../../../components/ImageDotOverlay";
 import ItemTooltipCard from "../../../components/ItemTooltipCard";
 import ChatPanel from "../../../components/ChatPanel";
-import type { Scan, ScanItem } from "../../../lib/types";
+import type { Scan, ScanItem, SwapSuggestion } from "../../../lib/types";
 
 const DOT_COLOR: Record<string, string> = {
   green: "#22c55e",
@@ -20,6 +20,7 @@ export default function ScanPage() {
   const [items, setItems] = useState<ScanItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<ScanItem | null>(null);
   const [rescoring, setRescoring] = useState(false);
+  const [swaps, setSwaps] = useState<Record<string, SwapSuggestion>>({});
 
   useEffect(() => {
     fetch(`/api/scans/${scanId}`)
@@ -30,12 +31,23 @@ export default function ScanPage() {
       });
   }, [scanId]);
 
+  useEffect(() => {
+    fetch(`/api/scans/${scanId}/swaps`)
+      .then((r) => r.json())
+      .then((data) => setSwaps(data.swaps ?? {}));
+  }, [scanId]);
+
   async function handleProfileSwitched() {
     setRescoring(true);
     const res = await fetch(`/api/scans/${scanId}/rescore`, { method: "POST" });
     const data = await res.json();
     setItems(data.items ?? []);
     setSelectedItem(null);
+
+    const swapsRes = await fetch(`/api/scans/${scanId}/swaps`);
+    const swapsData = await swapsRes.json();
+    setSwaps(swapsData.swaps ?? {});
+
     setRescoring(false);
   }
 
@@ -82,7 +94,7 @@ export default function ScanPage() {
           onSelectItem={setSelectedItem}
         />
         <div className="space-y-4">
-          <ItemTooltipCard item={selectedItem} />
+          <ItemTooltipCard item={selectedItem} swap={selectedItem ? swaps[selectedItem.id] : null} />
           <div className="rounded-2xl border border-black/5 bg-white p-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-1">Detected items</h3>
             <p className="text-xs text-gray-400 mb-2.5">

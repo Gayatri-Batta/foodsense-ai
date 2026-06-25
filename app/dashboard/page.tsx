@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { DailyNutritionResponse } from "../../lib/types";
+import type { DailyNutritionResponse, SwapSuggestion } from "../../lib/types";
+
+interface SwapSuggestionResponse {
+  suggestion: SwapSuggestion | null;
+  basedOn: { canonicalName: string; timesEaten: number } | null;
+}
 
 const MICRONUTRIENT_LABELS: Record<string, { label: string; unit: string }> = {
   potassium_mg: { label: "Potassium", unit: "mg" },
@@ -35,6 +40,7 @@ function round(n: number): number {
 export default function DashboardPage() {
   const [date, setDate] = useState(todayUtc());
   const [data, setData] = useState<DailyNutritionResponse | null>(null);
+  const [swapData, setSwapData] = useState<SwapSuggestionResponse | null>(null);
 
   useEffect(() => {
     setData(null);
@@ -42,6 +48,12 @@ export default function DashboardPage() {
       .then((r) => r.json())
       .then((d) => setData(d));
   }, [date]);
+
+  useEffect(() => {
+    fetch("/api/nutrition/swap-suggestion")
+      .then((r) => r.json())
+      .then((d) => setSwapData(d));
+  }, []);
 
   const isToday = date === todayUtc();
 
@@ -53,6 +65,22 @@ export default function DashboardPage() {
           Calories, macros, and micronutrients from items you&apos;ve confirmed eating that day.
         </p>
       </div>
+
+      {swapData?.suggestion && swapData.basedOn && (
+        <div className="rounded-2xl border border-green-100 bg-green-50 p-4 flex gap-3">
+          <span className="text-xl shrink-0">🌿</span>
+          <div>
+            <p className="text-xs font-medium text-green-700 uppercase tracking-wide mb-0.5">
+              Based on your eating habits
+            </p>
+            <p className="text-sm text-green-800">{swapData.suggestion.message}</p>
+            <p className="text-xs text-green-600 mt-1">
+              You&apos;ve had {swapData.basedOn.canonicalName.toLowerCase()} {swapData.basedOn.timesEaten} time
+              {swapData.basedOn.timesEaten === 1 ? "" : "s"} so far.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center justify-between rounded-2xl border border-black/5 bg-white px-4 py-3">
         <button

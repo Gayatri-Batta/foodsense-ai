@@ -1,5 +1,5 @@
 import { query } from "../pool";
-import type { RiskFlag } from "../../scoring/engine";
+import type { RiskFlag, NutritionRowInput } from "../../scoring/engine";
 
 export interface ScanRow {
   id: string;
@@ -139,7 +139,9 @@ export async function getScanItems(scanId: string): Promise<ScanItemRow[]> {
   return query<ScanItemRow>(`SELECT * FROM scan_items WHERE scan_id = $1 ORDER BY created_at`, [scanId]);
 }
 
-interface ScanItemWithNutritionRow extends ScanItemRow {
+export interface ScanItemWithNutritionRow extends ScanItemRow {
+  canonical_name: string | null;
+  category: string | null;
   glycemic_index: number | null;
   glycemic_load: string | null;
   cholesterol_mg: string | null;
@@ -158,10 +160,12 @@ interface ScanItemWithNutritionRow extends ScanItemRow {
 
 // Joins scan_items with their matched nutrition row — used by the rescore
 // route, which never calls Bedrock; it only re-runs the local scoring engine.
+// Also used by the swap-suggestion route, which needs category (to find
+// same-category alternatives) and canonical_name (for display).
 export async function getScanItemsWithNutrition(scanId: string): Promise<ScanItemWithNutritionRow[]> {
   return query<ScanItemWithNutritionRow>(
-    `SELECT si.*, n.glycemic_index, n.glycemic_load, n.cholesterol_mg, n.saturated_fat_g,
-            n.fat_g, n.calories_kcal, n.carbs_g, n.protein_g, n.fiber_g,
+    `SELECT si.*, n.canonical_name, n.category, n.glycemic_index, n.glycemic_load, n.cholesterol_mg,
+            n.saturated_fat_g, n.fat_g, n.calories_kcal, n.carbs_g, n.protein_g, n.fiber_g,
             n.sodium_mg, n.sugar_g, n.allergen_tags, n.diet_flags, n.key_nutrients
      FROM scan_items si
      LEFT JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
@@ -169,6 +173,80 @@ export async function getScanItemsWithNutrition(scanId: string): Promise<ScanIte
      ORDER BY si.created_at`,
     [scanId],
   );
+}
+
+export interface FrequentlyEatenItem {
+  id: string;
+  canonicalName: string;
+  category: string | null;
+  timesEaten: number;
+  nutrition: NutritionRowInput;
+}
+
+interface FrequentlyEatenQueryRow {
+  id: string;
+  canonical_name: string;
+  category: string | null;
+  times_eaten: string;
+  glycemic_index: number | null;
+  glycemic_load: string | null;
+  cholesterol_mg: string | null;
+  saturated_fat_g: string | null;
+  fat_g: string | null;
+  calories_kcal: string | null;
+  carbs_g: string | null;
+  protein_g: string | null;
+  fiber_g: string | null;
+  sodium_mg: string | null;
+  sugar_g: string | null;
+  allergen_tags: string[];
+  diet_flags: string[];
+  key_nutrients: Record<string, number>;
+}
+
+// The "past eating habits" half of the swap-suggestion feature: which
+// confirmed-eaten foods come up most often for this user, most frequent
+// first. The caller re-scores each against the live profile rather than
+// trusting whatever color was stored historically, since the profile may
+// have changed since those scans.
+export async function listFrequentlyEatenNutritionItems(userId: string, limit: number): Promise<FrequentlyEatenItem[]> {
+  const rows = await query<FrequentlyEatenQueryRow>(
+    `SELECT n.id, n.canonical_name, n.category, COUNT(*) AS times_eaten,
+            n.glycemic_index, n.glycemic_load, n.cholesterol_mg, n.saturated_fat_g, n.fat_g,
+            n.calories_kcal, n.carbs_g, n.protein_g, n.fiber_g, n.sodium_mg, n.sugar_g,
+            n.allergen_tags, n.diet_flags, n.key_nutrients
+     FROM scan_items si
+     JOIN scans s ON s.id = si.scan_id
+     JOIN nutrition_items n ON n.id = si.matched_nutrition_item_id
+     WHERE s.user_id = $1 AND si.consumed = true
+     GROUP BY n.id
+     ORDER BY times_eaten DESC
+     LIMIT $2`,
+    [userId, limit],
+  );
+
+  return rows.map((r) => ({
+    id: r.id,
+    canonicalName: r.canonical_name,
+    category: r.category,
+    timesEaten: Number(r.times_eaten),
+    nutrition: {
+      glycemicIndex: r.glycemic_index,
+      glycemicLoad: r.glycemic_load == null ? null : Number(r.glycemic_load),
+      cholesterolMg: r.cholesterol_mg == null ? null : Number(r.cholesterol_mg),
+      saturatedFatG: r.saturated_fat_g == null ? null : Number(r.saturated_fat_g),
+      sodiumMg: r.sodium_mg == null ? null : Number(r.sodium_mg),
+      sugarG: r.sugar_g == null ? null : Number(r.sugar_g),
+      allergenTags: r.allergen_tags ?? [],
+      dietFlags: r.diet_flags ?? [],
+      keyNutrients: r.key_nutrients ?? {},
+      caloriesKcal: r.calories_kcal == null ? null : Number(r.calories_kcal),
+      fatG: r.fat_g == null ? null : Number(r.fat_g),
+      carbsG: r.carbs_g == null ? null : Number(r.carbs_g),
+      proteinG: r.protein_g == null ? null : Number(r.protein_g),
+      fiberG: r.fiber_g == null ? null : Number(r.fiber_g),
+    },
+  }));
 }
 
 export interface DailyNutritionTotals {

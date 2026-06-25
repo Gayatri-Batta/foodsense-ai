@@ -103,6 +103,13 @@ export interface DailyNutritionResponse {
   items: DailyNutritionItem[];
 }
 
+export interface SwapSuggestion {
+  candidateId: string;
+  candidateName: string;
+  rule: string;
+  message: string;
+}
+
 export interface PendingConsumptionItem {
   id: string;
   scanId: string;

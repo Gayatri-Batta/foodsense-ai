@@ -118,3 +118,26 @@ export async function matchNutritionItem(detectedLabel: string): Promise<Nutriti
 
   return { nutritionItemId: null, matchScore: top?.similarity ?? null, matchMethod: "unmatched", nutrition: null };
 }
+
+export interface NutritionCandidate {
+  id: string;
+  canonicalName: string;
+  nutrition: NutritionRowInput;
+}
+
+// Swap candidates: every other curated item in the same food category, so a
+// suggested alternative is always something you'd plausibly reach for in
+// place of the original (a dairy swap for a dairy item, not a steak swap for
+// sour cream). The caller scores each candidate against the live profile
+// before suggesting anything, so only real, current improvements surface.
+export async function listNutritionItemsByCategory(category: string, excludeId: string): Promise<NutritionCandidate[]> {
+  const rows = await query<NutritionItemRow>(
+    `SELECT id, canonical_name, aliases, glycemic_index, glycemic_load, cholesterol_mg,
+            saturated_fat_g, fat_g, calories_kcal, carbs_g, protein_g, fiber_g,
+            sodium_mg, sugar_g, allergen_tags, diet_flags, key_nutrients, 0 AS similarity
+     FROM nutrition_items
+     WHERE category = $1 AND id != $2`,
+    [category, excludeId],
+  );
+  return rows.map((r) => ({ id: r.id, canonicalName: r.canonical_name, nutrition: toNutritionRowInput(r) }));
+}

@@ -1,4 +1,4 @@
-import type { ScanItem } from "../lib/types";
+import type { ScanItem, SwapSuggestion } from "../lib/types";
 
 const COLOR_BADGE: Record<string, string> = {
   green: "bg-green-100 text-green-700",
@@ -14,7 +14,7 @@ const RULE_ICON: Record<string, string> = {
   diet: "🌱",
 };
 
-export default function ItemTooltipCard({ item }: { item: ScanItem | null }) {
+export default function ItemTooltipCard({ item, swap }: { item: ScanItem | null; swap?: SwapSuggestion | null }) {
   if (!item) {
     return (
       <div className="rounded-2xl border border-black/5 bg-white p-5 text-sm text-gray-400 text-center">
@@ -48,6 +48,12 @@ export default function ItemTooltipCard({ item }: { item: ScanItem | null }) {
       )}
       {item.match_method === "unmatched" && (
         <p className="text-xs text-gray-400 italic pt-1">No confident nutrition match found.</p>
+      )}
+      {swap && (
+        <div className="rounded-xl bg-green-50 border border-green-100 px-3 py-2.5 flex gap-2">
+          <span className="text-base shrink-0">🌿</span>
+          <p className="text-sm text-green-800">{swap.message}</p>
+        </div>
       )}
     </div>
   );
