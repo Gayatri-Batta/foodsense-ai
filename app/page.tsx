@@ -7,7 +7,7 @@ import PendingConsumptionBanner from "../components/PendingConsumptionBanner";
 import type { HealthProfile } from "../lib/types";
 
 const FEATURES = [
-  { icon: "📸", title: "Snap a photo", text: "Point your camera at any plate — no manual logging." },
+  { icon: "📸", title: "Snap a photo", text: "Point your camera at any plate instead of logging food by hand." },
   { icon: "🎯", title: "Per-item scoring", text: "Every food gets its own color-coded risk score, not just a total." },
   { icon: "💬", title: "Ask follow-ups", text: "Chat about the scan grounded in your real results, not generic advice." },
 ];
@@ -97,7 +97,7 @@ export default function Home() {
           Know if your plate <span className="text-brand">actually</span> fits your health
         </h1>
         <p className="text-gray-600 max-w-xl mx-auto text-lg">
-          Upload a food photo, set your health conditions, and get a color-coded breakdown of every item — no guesswork.
+          Upload a food photo, set your health conditions, and get a color-coded breakdown of every item so you&apos;re never guessing.
         </p>
       </section>
 
@@ -117,7 +117,7 @@ export default function Home() {
         <section className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 sm:p-8 animate-fade-in">
           <h2 className="text-xl font-semibold mb-1">Set up your health profile</h2>
           <p className="text-sm text-gray-500 mb-5">
-            Pick conditions to watch for — diabetes, cholesterol, allergies, or your own custom ones.
+            Pick conditions to watch for, like diabetes, cholesterol, or allergies, or add your own custom ones.
           </p>
           <ProfileForm onCreated={() => window.location.reload()} />
         </section>

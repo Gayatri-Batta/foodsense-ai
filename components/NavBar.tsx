@@ -22,6 +22,9 @@ export default function NavBar() {
             <Link href="/dashboard" className="hover:text-brand transition-colors">
               Dashboard
             </Link>
+            <Link href="/assistant" className="hover:text-brand transition-colors">
+              Assistant
+            </Link>
             <Link href="/profiles" className="hover:text-brand transition-colors">
               Profiles
             </Link>
