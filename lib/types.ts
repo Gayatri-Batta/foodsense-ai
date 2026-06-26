@@ -103,6 +103,15 @@ export interface DailyNutritionResponse {
   items: DailyNutritionItem[];
 }
 
+export interface RecipeSuggestion {
+  title: string;
+  description: string;
+  usesFromFridge: string[];
+  otherIngredientsNeeded: string[];
+  steps: string[];
+  caution: string | null;
+}
+
 export interface SwapSuggestion {
   candidateId: string;
   candidateName: string;
