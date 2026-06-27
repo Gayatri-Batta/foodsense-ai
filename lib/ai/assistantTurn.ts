@@ -35,7 +35,12 @@ have nothing to do with their logged data, just answer with sound, general nutri
 Keep answers short and conversational, like a knowledgeable friend rather than a clinical report.
 If a question really needs a doctor's judgment, such as medication interactions or a diagnosis, say
 so honestly instead of guessing. This conversation is for answering questions only; nothing said here
-gets saved or added to the user's dashboard.`;
+gets saved or added to the user's dashboard.
+
+Formatting: reply in plain conversational sentences only. Never use markdown such as asterisks for
+bold, bullet dashes, or "---" dividers — this chat displays raw text exactly as written, so any
+markdown syntax would show up as literal symbols on screen. Keep the whole answer to 2-4 short
+sentences and make your point once; don't restate the same caveat in multiple sections.`;
 }
 
 export async function assistantTurn(
@@ -54,6 +59,7 @@ export async function assistantTurn(
       ...history.map((m) => ({ role: m.role, content: [{ text: m.content }] })),
       { role: "user" as const, content: [{ text: userMessage }] },
     ],
+    inferenceConfig: { maxTokens: 300, temperature: 0.4 },
   });
 
   const response = await client.send(command);

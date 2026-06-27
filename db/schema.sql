@@ -67,12 +67,14 @@ CREATE TABLE IF NOT EXISTS nutrition_items (
   diet_flags TEXT[] NOT NULL DEFAULT '{}',   -- 'vegan_unsafe' | 'vegetarian_safe' | 'keto_unsafe' ...
   key_nutrients JSONB NOT NULL DEFAULT '{}', -- escape hatch, e.g. {"potassium_mg": 350}
   serving_desc TEXT,
+  source TEXT NOT NULL DEFAULT 'curated',    -- 'curated' | 'ai_estimated' -- see lib/ai/estimateNutrition.ts
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 -- Added after the initial table was already live in production; ADD COLUMN
 -- IF NOT EXISTS makes re-running this file against an existing DB safe.
 ALTER TABLE nutrition_items ADD COLUMN IF NOT EXISTS calories_kcal NUMERIC;
 ALTER TABLE nutrition_items ADD COLUMN IF NOT EXISTS fat_g NUMERIC;
+ALTER TABLE nutrition_items ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'curated';
 CREATE INDEX IF NOT EXISTS nutrition_items_embedding_idx
   ON nutrition_items USING hnsw (embedding vector_cosine_ops);
 CREATE INDEX IF NOT EXISTS nutrition_items_allergen_gin

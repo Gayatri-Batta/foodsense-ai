@@ -32,7 +32,12 @@ ${itemLines}
 User's active health profile: ${profileLine}.
 
 Answer the user's question using ONLY this context. If asked about something not in the scan,
-say so honestly rather than inventing nutrition facts.`;
+say so honestly rather than inventing nutrition facts.
+
+Formatting: reply in plain conversational sentences only. Never use markdown such as asterisks for
+bold, bullet dashes, or "---" dividers — this chat displays raw text exactly as written, so any
+markdown syntax would show up as literal symbols on screen. Keep the whole answer to 2-4 short
+sentences and make your point once; don't restate the same caveat in multiple sections.`;
 }
 
 export async function chatTurn(
@@ -50,6 +55,7 @@ export async function chatTurn(
       ...history.map((m) => ({ role: m.role, content: [{ text: m.content }] })),
       { role: "user" as const, content: [{ text: userMessage }] },
     ],
+    inferenceConfig: { maxTokens: 300, temperature: 0.4 },
   });
 
   const response = await client.send(command);

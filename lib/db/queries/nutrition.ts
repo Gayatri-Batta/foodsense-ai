@@ -1,5 +1,6 @@
 import { query } from "../pool";
 import { embedText } from "../../ai/embedText";
+import { estimateNutrition, type NutritionEstimate } from "../../ai/estimateNutrition";
 import {
   VECTOR_MATCH_ACCEPT_SIMILARITY,
   VECTOR_MATCH_APPROXIMATE_SIMILARITY,
@@ -13,7 +14,7 @@ export interface NutritionMatchRow extends NutritionRowInput {
   similarity: number;
 }
 
-export type MatchMethod = "vector" | "alias_exact" | "unmatched";
+export type MatchMethod = "vector" | "alias_exact" | "ai_estimated" | "unmatched";
 
 export interface NutritionMatchResult {
   nutritionItemId: string | null;
@@ -116,7 +117,80 @@ export async function matchNutritionItem(detectedLabel: string): Promise<Nutriti
     };
   }
 
+  // No confident catalog match. Rather than giving up with a vague "couldn't
+  // identify this" yellow flag, ask the model already running the rest of
+  // the pipeline for a best-effort estimate, then cache it into the catalog
+  // (same embedding already computed above, no extra embed call) so the
+  // next time this food comes up it's a normal vector match.
+  try {
+    const estimate = await estimateNutrition(detectedLabel);
+    if (estimate) {
+      const estimatedId = await upsertEstimatedNutritionItem(estimate, vectorLiteral);
+      return {
+        nutritionItemId: estimatedId,
+        matchScore: null,
+        matchMethod: "ai_estimated",
+        nutrition: {
+          glycemicIndex: estimate.glycemicIndex,
+          glycemicLoad: estimate.glycemicLoad,
+          cholesterolMg: estimate.cholesterolMg,
+          saturatedFatG: estimate.saturatedFatG,
+          sodiumMg: estimate.sodiumMg,
+          sugarG: estimate.sugarG,
+          allergenTags: estimate.allergenTags,
+          dietFlags: estimate.dietFlags,
+          keyNutrients: {},
+          caloriesKcal: estimate.caloriesKcal,
+          fatG: estimate.fatG,
+          carbsG: estimate.carbsG,
+          proteinG: estimate.proteinG,
+          fiberG: estimate.fiberG,
+        },
+      };
+    }
+  } catch {
+    // Model estimate failed (throttled, malformed response, etc.) — fall
+    // through to the same "unmatched" outcome as before rather than failing
+    // the whole scan over a best-effort enhancement.
+  }
+
   return { nutritionItemId: null, matchScore: top?.similarity ?? null, matchMethod: "unmatched", nutrition: null };
+}
+
+// Inserts an AI-estimated row into the catalog (or, if a row with that exact
+// canonical name already exists, refreshes its embedding) so repeat
+// detections of the same food hit the normal vector-match tier next time
+// instead of re-estimating from scratch.
+async function upsertEstimatedNutritionItem(estimate: NutritionEstimate, vectorLiteral: string): Promise<string> {
+  const rows = await query<{ id: string }>(
+    `INSERT INTO nutrition_items
+       (canonical_name, aliases, category, embedding, glycemic_index, glycemic_load,
+        cholesterol_mg, saturated_fat_g, fat_g, calories_kcal, carbs_g, protein_g, fiber_g,
+        sodium_mg, sugar_g, allergen_tags, diet_flags, serving_desc, source)
+     VALUES ($1, '{}', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, 'ai_estimated')
+     ON CONFLICT (canonical_name) DO UPDATE SET embedding = EXCLUDED.embedding
+     RETURNING id`,
+    [
+      estimate.canonicalName,
+      estimate.category,
+      vectorLiteral,
+      estimate.glycemicIndex,
+      estimate.glycemicLoad,
+      estimate.cholesterolMg,
+      estimate.saturatedFatG,
+      estimate.fatG,
+      estimate.caloriesKcal,
+      estimate.carbsG,
+      estimate.proteinG,
+      estimate.fiberG,
+      estimate.sodiumMg,
+      estimate.sugarG,
+      estimate.allergenTags,
+      estimate.dietFlags,
+      estimate.servingDesc,
+    ],
+  );
+  return rows[0].id;
 }
 
 export interface NutritionCandidate {

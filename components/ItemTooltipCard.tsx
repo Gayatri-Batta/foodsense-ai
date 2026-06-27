@@ -6,6 +6,12 @@ const COLOR_BADGE: Record<string, string> = {
   red: "bg-red-100 text-red-700",
 };
 
+const COLOR_RISK_LABEL: Record<string, string> = {
+  green: "SAFE",
+  yellow: "CAUTION",
+  red: "HIGH RISK",
+};
+
 const RULE_ICON: Record<string, string> = {
   glycemic: "🩸",
   cholesterol: "❤️",
@@ -30,7 +36,7 @@ export default function ItemTooltipCard({ item, swap }: { item: ScanItem | null;
       <div className="flex items-center justify-between">
         <h3 className="font-semibold capitalize">{item.detected_label}</h3>
         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${badgeClass}`}>
-          {(item.color ?? "yellow").toUpperCase()}
+          {COLOR_RISK_LABEL[item.color ?? "yellow"] ?? "CAUTION"}
         </span>
       </div>
       <p className="text-sm text-gray-600">{item.reasoning}</p>
@@ -47,7 +53,12 @@ export default function ItemTooltipCard({ item, swap }: { item: ScanItem | null;
         </ul>
       )}
       {item.match_method === "unmatched" && (
-        <p className="text-xs text-gray-400 italic pt-1">No confident nutrition match found.</p>
+        <p className="text-xs text-gray-400 italic pt-1">Couldn&apos;t identify this item&apos;s nutrition data.</p>
+      )}
+      {item.match_method === "ai_estimated" && (
+        <p className="text-xs text-gray-400 italic pt-1">
+          Nutrition estimated by AI, not from the verified catalog.
+        </p>
       )}
       {swap && (
         <div className="rounded-xl bg-green-50 border border-green-100 px-3 py-2.5 flex gap-2">
