@@ -15,12 +15,14 @@ const FEATURES = [
 
 export default function Home() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const [profiles, setProfiles] = useState<HealthProfile[] | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/profiles")
@@ -71,6 +73,7 @@ export default function Home() {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) submitFile(file);
+    e.target.value = "";
   }
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -136,7 +139,16 @@ export default function Home() {
             }`}
           >
             <input
-              ref={fileInputRef}
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileChange}
+              className="hidden"
+              disabled={uploading}
+            />
+            <input
+              ref={galleryInputRef}
               type="file"
               accept="image/*"
               onChange={handleFileChange}
@@ -160,15 +172,60 @@ export default function Home() {
                 <div className="text-4xl">🥗</div>
                 <p className="text-gray-600">Drag a photo here, or</p>
                 <button
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => setPickerOpen(true)}
                   className="bg-brand hover:bg-brand-dark text-white rounded-full px-6 py-2.5 font-medium transition-colors"
                 >
-                  Choose a photo
+                  Add a photo
                 </button>
               </div>
             )}
             {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
           </div>
+
+          {pickerOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 animate-fade-in"
+              onClick={() => setPickerOpen(false)}
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl shadow-xl overflow-hidden"
+              >
+                <div className="p-2">
+                  <button
+                    onClick={() => {
+                      setPickerOpen(false);
+                      cameraInputRef.current?.click();
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <span className="w-9 h-9 rounded-full bg-brand-light flex items-center justify-center text-lg shrink-0">
+                      📷
+                    </span>
+                    <span className="font-medium text-gray-800">Take Photo</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setPickerOpen(false);
+                      galleryInputRef.current?.click();
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <span className="w-9 h-9 rounded-full bg-brand-light flex items-center justify-center text-lg shrink-0">
+                      🖼️
+                    </span>
+                    <span className="font-medium text-gray-800">Choose from Library</span>
+                  </button>
+                </div>
+                <button
+                  onClick={() => setPickerOpen(false)}
+                  className="w-full border-t border-gray-100 py-3.5 font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
 
           <PendingConsumptionBanner />
         </section>
