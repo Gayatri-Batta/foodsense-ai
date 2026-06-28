@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ProfileForm from "../components/ProfileForm";
 import PendingConsumptionBanner from "../components/PendingConsumptionBanner";
 import AssistantWidget from "../components/AssistantWidget";
+import CameraCaptureModal from "../components/CameraCaptureModal";
 import type { HealthProfile } from "../lib/types";
 
 const FEATURES = [
@@ -23,11 +24,17 @@ export default function Home() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [cameraModalOpen, setCameraModalOpen] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
     fetch("/api/profiles")
       .then((r) => r.json())
       .then((data) => setProfiles(data.profiles ?? []));
+  }, []);
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia("(pointer: coarse)").matches);
   }, []);
 
   const activeProfile = profiles?.find((p) => p.is_active) ?? null;
@@ -195,7 +202,11 @@ export default function Home() {
                   <button
                     onClick={() => {
                       setPickerOpen(false);
-                      cameraInputRef.current?.click();
+                      if (isTouchDevice) {
+                        cameraInputRef.current?.click();
+                      } else {
+                        setCameraModalOpen(true);
+                      }
                     }}
                     className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-left"
                   >
@@ -225,6 +236,16 @@ export default function Home() {
                 </button>
               </div>
             </div>
+          )}
+
+          {cameraModalOpen && (
+            <CameraCaptureModal
+              onCapture={(file) => {
+                setCameraModalOpen(false);
+                submitFile(file);
+              }}
+              onClose={() => setCameraModalOpen(false)}
+            />
           )}
 
           <PendingConsumptionBanner />
