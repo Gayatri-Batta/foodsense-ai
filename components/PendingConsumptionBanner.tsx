@@ -39,6 +39,7 @@ function groupByScan(items: PendingConsumptionItem[]): ScanGroup[] {
 // one meal's photo isn't repeated once per item.
 export default function PendingConsumptionBanner() {
   const [items, setItems] = useState<PendingConsumptionItem[] | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     fetch("/api/consumption/pending")
@@ -73,9 +74,28 @@ export default function PendingConsumptionBanner() {
 
   if (!items || items.length === 0) return null;
 
+  if (!expanded) {
+    return (
+      <button
+        onClick={() => setExpanded(true)}
+        className="w-full flex items-center justify-between rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-3.5 animate-fade-in hover:border-brand/30 transition-colors"
+      >
+        <span className="text-sm font-medium text-gray-700">
+          Did you eat these? {items.length} item{items.length === 1 ? "" : "s"} need a yes or no.
+        </span>
+        <span className="text-sm font-medium text-brand shrink-0">Review</span>
+      </button>
+    );
+  }
+
   return (
     <section className="rounded-2xl border border-black/5 bg-white shadow-sm p-5 animate-fade-in">
-      <h2 className="font-semibold mb-1">Did you eat these?</h2>
+      <div className="flex items-start justify-between mb-1">
+        <h2 className="font-semibold">Did you eat these?</h2>
+        <button onClick={() => setExpanded(false)} className="text-sm text-gray-400 hover:text-gray-600 shrink-0">
+          Hide
+        </button>
+      </div>
       <p className="text-sm text-gray-500 mb-4">
         {items.length} item{items.length === 1 ? "" : "s"} from past scans still need a yes or no before they count toward
         your nutrition dashboard.

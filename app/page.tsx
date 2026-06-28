@@ -124,8 +124,6 @@ export default function Home() {
         </section>
       ) : (
         <section className="space-y-5 animate-fade-in">
-          <PendingConsumptionBanner />
-
           <div
             onDragOver={(e) => {
               e.preventDefault();
@@ -171,6 +169,8 @@ export default function Home() {
             )}
             {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
           </div>
+
+          <PendingConsumptionBanner />
         </section>
       )}
 
