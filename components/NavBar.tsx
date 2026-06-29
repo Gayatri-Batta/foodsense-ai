@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ProfileSwitcher from "./ProfileSwitcher";
+import AccountMenu from "./AccountMenu";
 
 export default function NavBar() {
   return (
@@ -11,6 +12,8 @@ export default function NavBar() {
             Profiles
           </Link>
           <ProfileSwitcher />
+          <span className="w-px h-3 bg-gray-200 shrink-0" />
+          <AccountMenu />
         </div>
       </div>
 

@@ -10,9 +10,12 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email TEXT UNIQUE,
+  password_hash TEXT,           -- NULL until the user signs up; see lib/auth.ts
   display_name TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- Added after users was already live in production.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT;
 
 -- ============ HEALTH PROFILES ============
 CREATE TABLE IF NOT EXISTS health_profiles (
