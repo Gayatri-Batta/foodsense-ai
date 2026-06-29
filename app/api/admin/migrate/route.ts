@@ -7,8 +7,9 @@ import { getPool } from "../../../../lib/db/pool";
 // running Vercel function -- there's no local AWS credential path to this
 // cluster, since it lives in Vercel's own AWS account. So schema migration
 // has to run from inside the deployment, behind a shared-secret check.
-export async function POST(req: NextRequest) {
-  if (req.headers.get("x-admin-secret") !== process.env.ADMIN_SECRET) {
+async function run(req: NextRequest) {
+  const secret = req.headers.get("x-admin-secret") ?? req.nextUrl.searchParams.get("secret");
+  if (secret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -17,4 +18,14 @@ export async function POST(req: NextRequest) {
   await pool.query(sql);
 
   return NextResponse.json({ ok: true });
+}
+
+// GET so this can be triggered by just visiting a URL (no dev tools needed),
+// in addition to the original header-based POST.
+export async function GET(req: NextRequest) {
+  return run(req);
+}
+
+export async function POST(req: NextRequest) {
+  return run(req);
 }
