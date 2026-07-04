@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f7fb;
-  --foreground: #16181d;
-  --brand: #6d28d9;
-  --brand-dark: #4c1d95;
-  --brand-light: #ede9fe;
+  --background: #ede9de;
+  --foreground: #1a2520;
+  --brand: #1e3a2c;
+  --brand-dark: #0f2118;
+  --brand-light: #d8e8dc;
 }
 
 @theme inline {
@@ -16,6 +16,7 @@
   --color-brand-light: var(--brand-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-lora), Georgia, "Times New Roman", serif;
 }
 
 body {

@@ -32,11 +32,11 @@ function SageFace({ size = 30 }: { size?: number }) {
     >
       {/* Left eye */}
       <ellipse cx="11" cy="11" rx="3.5" ry="4" fill="white" />
-      <circle cx="11.5" cy="12" r="2" fill="#4c1d95" />
+      <circle cx="11.5" cy="12" r="2" fill="#0f2118" />
       <circle cx="12.5" cy="10.5" r="0.8" fill="white" opacity="0.9" />
       {/* Right eye */}
       <ellipse cx="23" cy="11" rx="3.5" ry="4" fill="white" />
-      <circle cx="23.5" cy="12" r="2" fill="#4c1d95" />
+      <circle cx="23.5" cy="12" r="2" fill="#0f2118" />
       <circle cx="24.5" cy="10.5" r="0.8" fill="white" opacity="0.9" />
       {/* Smile */}
       <path

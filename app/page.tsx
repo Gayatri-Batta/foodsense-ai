@@ -100,24 +100,76 @@ export default function Home() {
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-12 space-y-12">
-      <section className="text-center space-y-4 animate-fade-in">
-        <span className="inline-block text-xs font-semibold tracking-wide uppercase text-brand bg-brand-light rounded-full px-3 py-1">
-          AI-Powered &middot; Personalized &middot; Instant
-        </span>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          Know if your plate <span className="text-brand">actually</span> fits your health
-        </h1>
-        <p className="text-gray-600 max-w-xl mx-auto text-lg">
-          Upload a food photo, set your health conditions, and get a color-coded breakdown of every item so you&apos;re never guessing.
-        </p>
+      {/* Hero — two-column: editorial text left, preview card right */}
+      <section className="grid sm:grid-cols-2 gap-10 items-center animate-fade-in py-4">
+        <div className="space-y-6">
+          <p className="text-xs font-medium tracking-widest uppercase text-brand/70">
+            Personalized food scanning
+          </p>
+          <h1 className="font-serif text-4xl sm:text-5xl leading-[1.15] tracking-tight text-foreground">
+            Know if your plate <em>actually</em> fits your health
+          </h1>
+          <p className="text-gray-500 text-base leading-relaxed max-w-sm">
+            Snap a photo. Every item on the plate gets scored against your conditions.
+          </p>
+          {activeProfile ? (
+            <button
+              onClick={() => setPickerOpen(true)}
+              className="inline-flex items-center gap-2 bg-brand text-white rounded-full px-6 py-2.5 font-medium hover:bg-brand-dark transition-colors"
+            >
+              Scan a plate
+            </button>
+          ) : (
+            <div className="flex items-center gap-5">
+              <button
+                onClick={() => {
+                  document.getElementById("profile-setup")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="inline-flex items-center gap-2 bg-brand text-white rounded-full px-6 py-2.5 font-medium hover:bg-brand-dark transition-colors"
+              >
+                Get started
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Decorative preview card */}
+        <div className="hidden sm:block">
+          <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-5 space-y-1">
+            <p className="font-semibold text-sm text-foreground mb-3">Chicken carbonara</p>
+            <div className="divide-y divide-gray-50">
+              <div className="flex items-center justify-between py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0" />
+                  <span className="text-sm text-gray-700">Cream sauce</span>
+                </div>
+                <span className="text-sm font-medium text-red-500">Avoid</span>
+              </div>
+              <div className="flex items-center justify-between py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
+                  <span className="text-sm text-gray-700">Fettuccine</span>
+                </div>
+                <span className="text-sm font-medium text-amber-600">Limit</span>
+              </div>
+              <div className="flex items-center justify-between py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
+                  <span className="text-sm text-gray-700">Grilled chicken</span>
+                </div>
+                <span className="text-sm font-medium text-green-600">Good</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {!activeProfile && (
         <section className="grid sm:grid-cols-3 gap-4">
           {FEATURES.map((f) => (
-            <div key={f.title} className="rounded-2xl bg-white border border-black/5 shadow-sm p-5 text-center">
+            <div key={f.title} className="rounded-2xl bg-white/60 border border-black/5 p-5 text-center">
               <div className="text-3xl mb-2">{f.icon}</div>
-              <h3 className="font-semibold">{f.title}</h3>
+              <h3 className="font-semibold text-foreground">{f.title}</h3>
               <p className="text-sm text-gray-500 mt-1">{f.text}</p>
             </div>
           ))}
@@ -125,7 +177,7 @@ export default function Home() {
       )}
 
       {!activeProfile ? (
-        <section className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 sm:p-8 animate-fade-in">
+        <section id="profile-setup" className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 sm:p-8 animate-fade-in">
           <h2 className="text-xl font-semibold mb-1">Set up your health profile</h2>
           <p className="text-sm text-gray-500 mb-5">
             Pick conditions to watch for, like diabetes, cholesterol, or allergies, or add your own custom ones.
@@ -142,7 +194,7 @@ export default function Home() {
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             className={`rounded-2xl border-2 border-dashed p-10 text-center transition-colors ${
-              dragOver ? "border-brand bg-brand-light" : "border-gray-200 bg-white"
+              dragOver ? "border-brand bg-brand-light" : "border-black/10 bg-white/70"
             }`}
           >
             <input
