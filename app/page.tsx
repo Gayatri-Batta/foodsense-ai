@@ -134,19 +134,7 @@ export default function Home() {
             >
               Set up profile
             </button>
-          ) : (
-            <div className="flex items-center gap-4">
-              <Link
-                href="/signup"
-                className="inline-flex items-center gap-2 bg-brand text-white rounded-full px-6 py-2.5 font-medium hover:bg-brand-dark transition-colors"
-              >
-                Create account
-              </Link>
-              <Link href="/login" className="text-sm text-gray-500 hover:text-foreground transition-colors">
-                Log in
-              </Link>
-            </div>
-          )}
+          ) : null}
         </div>
 
         {/* Decorative preview card */}
