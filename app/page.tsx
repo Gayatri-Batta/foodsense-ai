@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import ProfileForm from "../components/ProfileForm";
 import PendingConsumptionBanner from "../components/PendingConsumptionBanner";
 import AssistantWidget from "../components/AssistantWidget";
@@ -19,6 +20,7 @@ export default function Home() {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const [profiles, setProfiles] = useState<HealthProfile[] | null>(null);
+  const [signedIn, setSignedIn] = useState<boolean | null>(null); // null = loading
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -28,9 +30,13 @@ export default function Home() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
-    fetch("/api/profiles")
-      .then((r) => r.json())
-      .then((data) => setProfiles(data.profiles ?? []));
+    Promise.all([
+      fetch("/api/profiles").then((r) => r.json()),
+      fetch("/api/auth/me").then((r) => r.json()),
+    ]).then(([profilesData, authData]) => {
+      setProfiles(profilesData.profiles ?? []);
+      setSignedIn(authData.user?.email != null); // email present = real account
+    });
   }, []);
 
   useEffect(() => {
@@ -90,7 +96,7 @@ export default function Home() {
     if (file) submitFile(file);
   }
 
-  if (profiles === null) {
+  if (profiles === null || signedIn === null) {
     return (
       <main className="max-w-5xl mx-auto px-6 py-24 text-center text-gray-400">
         Loading...
@@ -107,7 +113,7 @@ export default function Home() {
             Personalized food scanning
           </p>
           <h1 className="font-serif text-4xl sm:text-5xl leading-[1.15] tracking-tight text-foreground">
-            Know if your plate <em>actually</em> fits your health
+            Know if your plate actually fits your health
           </h1>
           <p className="text-gray-500 text-base leading-relaxed max-w-sm">
             Snap a photo. Every item on the plate gets scored against your conditions.
@@ -119,16 +125,26 @@ export default function Home() {
             >
               Scan a plate
             </button>
+          ) : signedIn ? (
+            <button
+              onClick={() => {
+                document.getElementById("profile-setup")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="inline-flex items-center gap-2 bg-brand text-white rounded-full px-6 py-2.5 font-medium hover:bg-brand-dark transition-colors"
+            >
+              Set up profile
+            </button>
           ) : (
-            <div className="flex items-center gap-5">
-              <button
-                onClick={() => {
-                  document.getElementById("profile-setup")?.scrollIntoView({ behavior: "smooth" });
-                }}
+            <div className="flex items-center gap-4">
+              <Link
+                href="/signup"
                 className="inline-flex items-center gap-2 bg-brand text-white rounded-full px-6 py-2.5 font-medium hover:bg-brand-dark transition-colors"
               >
-                Get started
-              </button>
+                Create account
+              </Link>
+              <Link href="/login" className="text-sm text-gray-500 hover:text-foreground transition-colors">
+                Log in
+              </Link>
             </div>
           )}
         </div>
@@ -164,7 +180,7 @@ export default function Home() {
         </div>
       </section>
 
-      {!activeProfile && (
+      {!activeProfile && !signedIn && (
         <section className="grid sm:grid-cols-3 gap-4">
           {FEATURES.map((f) => (
             <div key={f.title} className="rounded-2xl bg-white/60 border border-black/5 p-5 text-center">
@@ -177,13 +193,34 @@ export default function Home() {
       )}
 
       {!activeProfile ? (
-        <section id="profile-setup" className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 sm:p-8 animate-fade-in">
-          <h2 className="text-xl font-semibold mb-1">Set up your health profile</h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Pick conditions to watch for, like diabetes, cholesterol, or allergies, or add your own custom ones.
-          </p>
-          <ProfileForm onCreated={() => window.location.reload()} />
-        </section>
+        signedIn ? (
+          <section id="profile-setup" className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 sm:p-8 animate-fade-in">
+            <h2 className="text-xl font-semibold mb-1">Set up your health profile</h2>
+            <p className="text-sm text-gray-500 mb-5">
+              Pick conditions to watch for, like diabetes, cholesterol, or allergies, or add your own custom ones.
+            </p>
+            <ProfileForm onCreated={() => window.location.reload()} />
+          </section>
+        ) : (
+          <section id="profile-setup" className="bg-white rounded-2xl border border-black/5 p-8 sm:p-10 text-center space-y-4 animate-fade-in">
+            <div className="text-4xl">🍽️</div>
+            <h2 className="font-serif text-2xl text-foreground">Create an account to get started</h2>
+            <p className="text-gray-500 max-w-sm mx-auto text-sm leading-relaxed">
+              Set up your health profile, scan your meals, and get personalized food insights. Your data stays private and syncs across all your devices.
+            </p>
+            <div className="flex items-center justify-center gap-3 pt-1">
+              <Link
+                href="/signup"
+                className="bg-brand text-white rounded-full px-6 py-2.5 font-medium hover:bg-brand-dark transition-colors"
+              >
+                Create account
+              </Link>
+              <Link href="/login" className="text-sm text-gray-500 hover:text-foreground transition-colors">
+                Already have one? Log in
+              </Link>
+            </div>
+          </section>
+        )
       ) : (
         <section className="space-y-5 animate-fade-in">
           <div
