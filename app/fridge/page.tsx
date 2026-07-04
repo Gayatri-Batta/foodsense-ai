@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import CameraCaptureModal from "../../components/CameraCaptureModal";
 import type { RecipeSuggestion } from "../../lib/types";
 
 interface FridgeScanResult {
@@ -9,12 +10,20 @@ interface FridgeScanResult {
 }
 
 export default function FridgePage() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [result, setResult] = useState<FridgeScanResult | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [cameraModalOpen, setCameraModalOpen] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   async function submitFile(file: File) {
     setUploading(true);
@@ -43,6 +52,7 @@ export default function FridgePage() {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) submitFile(file);
+    e.target.value = "";
   }
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -55,7 +65,7 @@ export default function FridgePage() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-12 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">What&apos;s in your fridge?</h1>
+        <h1 className="font-serif text-3xl tracking-tight text-foreground">What&apos;s in your fridge?</h1>
         <p className="text-gray-500 mt-1">
           Snap a photo of your fridge or pantry and get recipe ideas built around what you already have, filtered
           for your active health profile. Nothing here is saved.
@@ -63,18 +73,26 @@ export default function FridgePage() {
       </div>
 
       <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         className={`rounded-2xl border-2 border-dashed p-10 text-center transition-colors ${
-          dragOver ? "border-brand bg-brand-light" : "border-gray-200 bg-white"
+          dragOver ? "border-brand bg-brand-light" : "border-black/10 bg-white/70"
         }`}
       >
+        {/* Camera input — mobile only, triggers native camera */}
         <input
-          ref={fileInputRef}
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleFileChange}
+          className="hidden"
+          disabled={uploading}
+        />
+        {/* Gallery input — no capture so browser always shows the file picker */}
+        <input
+          ref={galleryInputRef}
           type="file"
           accept="image/*"
           onChange={handleFileChange}
@@ -98,15 +116,75 @@ export default function FridgePage() {
             <div className="text-4xl">🧊</div>
             <p className="text-gray-600">Drag a fridge photo here, or</p>
             <button
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => setPickerOpen(true)}
               className="bg-brand hover:bg-brand-dark text-white rounded-full px-6 py-2.5 font-medium transition-colors"
             >
-              Choose a photo
+              Add a photo
             </button>
           </div>
         )}
         {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
       </div>
+
+      {/* Photo source picker — same pattern as the plate scan */}
+      {pickerOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 animate-fade-in"
+          onClick={() => setPickerOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full sm:w-80 bg-white rounded-t-2xl sm:rounded-2xl shadow-xl overflow-hidden"
+          >
+            <div className="p-2">
+              <button
+                onClick={() => {
+                  setPickerOpen(false);
+                  if (isTouchDevice) {
+                    cameraInputRef.current?.click();
+                  } else {
+                    setCameraModalOpen(true);
+                  }
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-left"
+              >
+                <span className="w-9 h-9 rounded-full bg-brand-light flex items-center justify-center text-lg shrink-0">
+                  📷
+                </span>
+                <span className="font-medium text-gray-800">Take Photo</span>
+              </button>
+              <button
+                onClick={() => {
+                  setPickerOpen(false);
+                  galleryInputRef.current?.click();
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-left"
+              >
+                <span className="w-9 h-9 rounded-full bg-brand-light flex items-center justify-center text-lg shrink-0">
+                  🖼️
+                </span>
+                <span className="font-medium text-gray-800">Choose from Library</span>
+              </button>
+            </div>
+            <button
+              onClick={() => setPickerOpen(false)}
+              className="w-full border-t border-gray-100 py-3.5 font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {cameraModalOpen && (
+        <CameraCaptureModal
+          onCapture={(file) => {
+            setCameraModalOpen(false);
+            submitFile(file);
+          }}
+          onClose={() => setCameraModalOpen(false)}
+        />
+      )}
 
       {result && result.ingredients.length === 0 && (
         <div className="rounded-2xl border border-black/5 bg-white p-8 text-center text-gray-500">
