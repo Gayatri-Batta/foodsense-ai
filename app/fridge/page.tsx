@@ -65,7 +65,7 @@ export default function FridgePage() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-12 space-y-6">
       <div>
-        <h1 className="font-serif text-3xl tracking-tight text-foreground">What&apos;s in your fridge?</h1>
+        <h1 className="font-serif text-3xl tracking-tight text-foreground">What&apos;s in your pantry?</h1>
         <p className="text-gray-500 mt-1">
           Snap a photo of your fridge or pantry and get recipe ideas built around what you already have, filtered
           for your active health profile. Nothing here is saved.

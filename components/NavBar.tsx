@@ -20,7 +20,7 @@ export default function NavBar() {
             Dashboard
           </Link>
           <Link href="/fridge" className="hover:text-foreground transition-colors">
-            Fridge
+            Pantry
           </Link>
         </nav>
 

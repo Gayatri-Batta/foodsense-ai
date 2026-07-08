@@ -7,6 +7,7 @@ import ProfileForm from "../components/ProfileForm";
 import PendingConsumptionBanner from "../components/PendingConsumptionBanner";
 import AssistantWidget from "../components/AssistantWidget";
 import CameraCaptureModal from "../components/CameraCaptureModal";
+import DemoModal from "../components/DemoModal";
 import type { HealthProfile } from "../lib/types";
 
 const FEATURES = [
@@ -27,6 +28,7 @@ export default function Home() {
   const [dragOver, setDragOver] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [cameraModalOpen, setCameraModalOpen] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
@@ -118,6 +120,19 @@ export default function Home() {
           <p className="text-gray-500 text-base leading-relaxed max-w-sm">
             Snap a photo. Every item on the plate gets scored against your conditions.
           </p>
+
+          {!activeProfile && !signedIn && (
+            <button
+              onClick={() => setDemoOpen(true)}
+              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-foreground transition-colors"
+            >
+              <span className="w-6 h-6 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                <span className="text-brand text-[10px] ml-0.5">▶</span>
+              </span>
+              Watch a demo
+            </button>
+          )}
+
           {activeProfile ? (
             <button
               onClick={() => setPickerOpen(true)}
@@ -330,6 +345,8 @@ export default function Home() {
       )}
 
       <AssistantWidget />
+
+      {demoOpen && <DemoModal onClose={() => setDemoOpen(false)} />}
     </main>
   );
 }
