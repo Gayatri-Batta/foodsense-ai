@@ -121,18 +121,6 @@ export default function Home() {
             Snap a photo. Every item on the plate gets scored against your conditions.
           </p>
 
-          {!activeProfile && !signedIn && (
-            <button
-              onClick={() => setDemoOpen(true)}
-              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-foreground transition-colors"
-            >
-              <span className="w-6 h-6 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
-                <span className="text-brand text-[10px] ml-0.5">▶</span>
-              </span>
-              Watch a demo
-            </button>
-          )}
-
           {activeProfile ? (
             <button
               onClick={() => setPickerOpen(true)}
@@ -149,11 +137,32 @@ export default function Home() {
             >
               Set up profile
             </button>
-          ) : null}
+          ) : (
+            <div className="flex items-center gap-3 flex-wrap">
+              <Link
+                href="/signup"
+                className="inline-flex items-center bg-brand text-white rounded-full px-6 py-2.5 text-sm font-medium hover:bg-brand-dark transition-colors"
+              >
+                Create account
+              </Link>
+              <button
+                onClick={() => setDemoOpen(true)}
+                className="inline-flex items-center gap-2 bg-white border border-black/10 text-foreground rounded-full px-5 py-2.5 text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-brand">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Watch demo
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Decorative preview card */}
-        <div className="hidden sm:block">
+        {/* Preview card — clickable to open demo when anonymous */}
+        <div
+          className={`hidden sm:block relative ${!activeProfile && !signedIn ? "cursor-pointer group" : ""}`}
+          onClick={!activeProfile && !signedIn ? () => setDemoOpen(true) : undefined}
+        >
           <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-5 space-y-1">
             <p className="font-semibold text-sm text-foreground mb-3">Chicken carbonara</p>
             <div className="divide-y divide-gray-50">
@@ -180,6 +189,17 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Play overlay on hover — anonymous only */}
+          {!activeProfile && !signedIn && (
+            <div className="absolute inset-0 rounded-2xl flex items-center justify-center bg-black/0 group-hover:bg-black/10 transition-colors">
+              <div className="w-12 h-12 rounded-full bg-brand shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-200">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white" className="ml-1">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
