@@ -147,11 +147,17 @@ export default function Home() {
               </Link>
               <button
                 onClick={() => setDemoOpen(true)}
-                className="inline-flex items-center gap-2 bg-white border border-black/10 text-foreground rounded-full px-5 py-2.5 text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2.5 text-sm font-medium text-foreground hover:text-brand transition-colors group"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-brand">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
+                {/* Pulsing play circle */}
+                <span className="relative shrink-0">
+                  <span className="absolute inset-0 rounded-full bg-brand/25 animate-pulse-ring" />
+                  <span className="relative w-10 h-10 rounded-full bg-brand flex items-center justify-center shadow-md group-hover:bg-brand-dark transition-colors">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white" className="ml-0.5">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                </span>
                 Watch demo
               </button>
             </div>
