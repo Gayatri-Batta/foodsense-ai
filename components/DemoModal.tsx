@@ -34,30 +34,36 @@ const STEPS = [
 ];
 
 // Step 1 — food items visible first, then dots pop onto each one
+// Food items arranged in quadrants INSIDE the plate
+// Positions are relative to the plate container (not the full modal)
 const FOOD_ITEMS = [
   {
-    top: "18%", left: "38%",
+    // top-left quadrant
+    top: "28%", left: "35%",
     emoji: "🍚", label: "White rice",
     badge: "High Risk", tc: "text-red-400",
-    bg: "#ef4444", glow: "rgba(239,68,68,0.65)",
+    bg: "#ef4444", glow: "rgba(239,68,68,0.7)",
   },
   {
-    top: "44%", left: "60%",
+    // top-right quadrant
+    top: "28%", left: "65%",
     emoji: "🍗", label: "Grilled chicken",
     badge: "Safe", tc: "text-green-400",
-    bg: "#22c55e", glow: "rgba(34,197,94,0.65)",
+    bg: "#22c55e", glow: "rgba(34,197,94,0.7)",
   },
   {
-    top: "62%", left: "28%",
+    // bottom-left quadrant
+    top: "65%", left: "35%",
     emoji: "🥦", label: "Broccoli",
     badge: "Safe", tc: "text-green-400",
-    bg: "#22c55e", glow: "rgba(34,197,94,0.65)",
+    bg: "#22c55e", glow: "rgba(34,197,94,0.7)",
   },
   {
-    top: "30%", left: "62%",
+    // bottom-right quadrant
+    top: "65%", left: "65%",
     emoji: "🫙", label: "Coconut sauce",
     badge: "Caution", tc: "text-amber-400",
-    bg: "#f59e0b", glow: "rgba(245,158,11,0.65)",
+    bg: "#f59e0b", glow: "rgba(245,158,11,0.7)",
   },
 ];
 
@@ -66,10 +72,9 @@ function ScanStep() {
   const [dotsVisible, setDotsVisible] = useState(0);
 
   useEffect(() => {
-    // Show food first, then start scan line, then pop dots
-    const t1 = setTimeout(() => setPhase("scanning"), 600);
-    const t2 = setTimeout(() => setPhase("dots"), 1400);
-    const dotTimers = [1600, 2000, 2400, 2800].map((delay, i) =>
+    const t1 = setTimeout(() => setPhase("scanning"), 700);
+    const t2 = setTimeout(() => setPhase("dots"), 1500);
+    const dotTimers = [1700, 2100, 2500, 2900].map((delay, i) =>
       setTimeout(() => setDotsVisible(i + 1), delay)
     );
     return () => { clearTimeout(t1); clearTimeout(t2); dotTimers.forEach(clearTimeout); };
@@ -77,58 +82,57 @@ function ScanStep() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="relative flex-1 bg-gradient-to-br from-stone-800 to-stone-950 overflow-hidden">
-        {/* Plate ring */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-44 h-44 rounded-full border border-stone-600/25 bg-stone-700/20" />
+      <div className="relative flex-1 bg-gradient-to-br from-stone-800 to-stone-950 overflow-hidden flex items-center justify-center">
+
+        {/* Plate — white dish clearly visible */}
+        <div className="relative w-44 h-44 rounded-full bg-stone-100 shadow-[0_4px_24px_rgba(0,0,0,0.5)] border-4 border-stone-200 flex items-center justify-center shrink-0">
+
+          {/* Plate inner rim */}
+          <div className="absolute inset-3 rounded-full border border-stone-300/60" />
+
+          {/* Food items pinned to quadrants inside the plate */}
+          {FOOD_ITEMS.map((item, i) => (
+            <div
+              key={i}
+              className="absolute flex flex-col items-center"
+              style={{ top: item.top, left: item.left, transform: "translate(-50%, -50%)" }}
+            >
+              <span className="text-xl select-none">{item.emoji}</span>
+
+              {/* Detection dot + label pop onto the food item */}
+              <div
+                className="absolute -top-1.5 -right-1.5 transition-all duration-300"
+                style={{
+                  opacity: dotsVisible > i ? 1 : 0,
+                  transform: dotsVisible > i ? "scale(1)" : "scale(0)",
+                }}
+              >
+                <div
+                  className="w-3 h-3 rounded-full border border-white"
+                  style={{ background: item.bg, boxShadow: `0 0 6px 2px ${item.glow}` }}
+                />
+              </div>
+
+              {/* Label pill appears after dot */}
+              {dotsVisible > i && (
+                <div
+                  className="absolute -bottom-5 whitespace-nowrap text-[8px] font-semibold px-1.5 py-0.5 rounded-full border text-white animate-fade-in"
+                  style={{ background: item.bg + "cc", borderColor: item.bg }}
+                >
+                  {item.label}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Food emojis always visible */}
-        {FOOD_ITEMS.map((item, i) => (
-          <div
-            key={i}
-            className="absolute flex flex-col items-center"
-            style={{ top: item.top, left: item.left, transform: "translate(-50%, -50%)" }}
-          >
-            <span className="text-2xl select-none drop-shadow-md">{item.emoji}</span>
-          </div>
-        ))}
-
-        {/* Scanning sweep line */}
+        {/* Scanning sweep line — only during scanning phase */}
         {phase === "scanning" && (
           <div
-            className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-green-400/70 to-transparent"
-            style={{ animation: "scanLine 0.8s ease-in-out" }}
+            className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-green-400/80 to-transparent pointer-events-none"
+            style={{ animation: "scanLine 0.8s ease-in-out forwards" }}
           />
         )}
-
-        {/* Detection dots pop onto each food item */}
-        {FOOD_ITEMS.map((item, i) => (
-          <div
-            key={i}
-            className="absolute flex items-start gap-1.5 transition-all duration-300"
-            style={{
-              top: item.top,
-              left: item.left,
-              transform: "translate(-50%, -50%)",
-              opacity: dotsVisible > i ? 1 : 0,
-              scale: dotsVisible > i ? "1" : "0.3",
-            }}
-          >
-            {/* Dot sits top-left of the emoji */}
-            <div
-              className="w-3.5 h-3.5 rounded-full border-[1.5px] border-white shrink-0 -mt-4 -ml-3"
-              style={{ background: item.bg, boxShadow: `0 0 8px 3px ${item.glow}` }}
-            />
-            {dotsVisible > i && (
-              <span
-                className="text-[9px] font-medium text-white/80 bg-black/50 backdrop-blur-sm rounded px-1.5 py-0.5 whitespace-nowrap -mt-6"
-              >
-                {item.label}
-              </span>
-            )}
-          </div>
-        ))}
 
         {/* Label top-right */}
         <div className="absolute top-2 right-3 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1 text-[10px] text-white/70 font-medium">
@@ -138,14 +142,16 @@ function ScanStep() {
         {/* Status bottom */}
         <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2">
           {dotsVisible < FOOD_ITEMS.length ? (
-            <span className="text-[10px] text-white/40 animate-pulse">Detecting items...</span>
+            <span className="text-[10px] text-white/40 animate-pulse">
+              {phase === "food" ? "Analysing photo..." : "Detecting items..."}
+            </span>
           ) : (
             <span className="text-[10px] text-green-400 font-medium">4 items detected</span>
           )}
         </div>
       </div>
 
-      {/* Bottom results strip — fades in once all dots are placed */}
+      {/* Bottom results strip */}
       <div
         className="bg-[#0d1710] border-t border-white/8 px-4 py-2.5 grid grid-cols-2 gap-x-4 gap-y-1.5 transition-opacity duration-500"
         style={{ opacity: dotsVisible === FOOD_ITEMS.length ? 1 : 0 }}
