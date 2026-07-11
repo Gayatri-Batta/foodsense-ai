@@ -19,7 +19,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "FoodSense AI — Personalized Food Health Analyzer",
+  title: "FoodSenseAI — Personalized Food Health Analyzer",
   description: "Upload a food photo and get a personalized health risk score for every item on your plate.",
 };
 

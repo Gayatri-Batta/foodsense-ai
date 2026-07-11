@@ -8,7 +8,7 @@ export default function NavBar() {
       <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between gap-6">
         {/* Brand */}
         <Link href="/" className="font-semibold text-base tracking-tight text-foreground shrink-0">
-          FoodSense AI
+          FoodSenseAI
         </Link>
 
         {/* Primary nav: focused links only, no redundant Home */}

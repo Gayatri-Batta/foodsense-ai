@@ -1,6 +1,6 @@
-# FoodSense AI
+# FoodSenseAI
 
-FoodSense AI analyzes photos of meals and scores each food item against your personal health conditions. Upload a photo of your plate, select your conditions such as diabetes, high cholesterol, or food allergies, and get a color-coded breakdown of every detected ingredient.
+FoodSenseAI analyzes photos of meals and scores each food item against your personal health conditions. Upload a photo of your plate, select your conditions such as diabetes, high cholesterol, or food allergies, and get a color-coded breakdown of every detected ingredient.
 
 Live app: [foodsense-ai-gamma.vercel.app](https://foodsense-ai-gamma.vercel.app)
 

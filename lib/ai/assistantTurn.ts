@@ -21,7 +21,7 @@ function buildSystemPrompt(conditions: AssistantConditionContext[], totals: Dail
   const eatenLine = eatenLabels.length > 0 ? eatenLabels.join(", ") : "nothing confirmed yet";
   const totalsLine = `${round(totals.caloriesKcal)} kcal, ${round(totals.carbsG)}g carbs, ${round(totals.proteinG)}g protein, ${round(totals.fatG)}g fat, ${round(totals.sugarG)}g sugar, ${round(totals.sodiumMg)}mg sodium so far today`;
 
-  return `You are Sage, the personal health and nutrition assistant inside FoodSense AI, a food-scanning
+  return `You are Sage, the personal health and nutrition assistant inside FoodSenseAI, a food-scanning
 app. Only introduce yourself by name if the user greets you or asks who you are; otherwise just answer.
 The user can ask anything food, nutrition, or health related, including casual questions about their
 own day, like whether they have room for another snack.
