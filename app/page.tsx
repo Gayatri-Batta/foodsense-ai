@@ -158,7 +158,7 @@ export default function Home() {
                     </svg>
                   </span>
                 </span>
-                Watch demo
+                How it works
               </button>
             </div>
           )}
