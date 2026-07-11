@@ -11,20 +11,7 @@ export default function NavBar() {
           FoodSenseAI
         </Link>
 
-        {/* Primary nav: focused links only, no redundant Home */}
-        <nav className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/history" className="hover:text-foreground transition-colors">
-            History
-          </Link>
-          <Link href="/dashboard" className="hover:text-foreground transition-colors">
-            Dashboard
-          </Link>
-          <Link href="/fridge" className="hover:text-foreground transition-colors">
-            Pantry
-          </Link>
-        </nav>
-
-        {/* Right cluster: active profile picker + account actions */}
+        {/* Right cluster: nav (signed-in only) + profile picker + account actions */}
         <div className="flex items-center gap-4 shrink-0">
           <ProfileSwitcher />
           <AccountMenu />

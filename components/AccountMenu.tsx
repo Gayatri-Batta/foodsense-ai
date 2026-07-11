@@ -2,15 +2,22 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SessionUser {
   id: string;
   email: string | null;
 }
 
+const NAV_LINKS = [
+  { href: "/history", label: "History" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/fridge", label: "Pantry" },
+];
+
 export default function AccountMenu() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
@@ -33,7 +40,9 @@ export default function AccountMenu() {
 
   if (!loaded) return null;
 
-  if (!user) {
+  const signedIn = user?.email != null;
+
+  if (!signedIn) {
     return (
       <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
         <Link href="/login" className="text-sm text-gray-500 hover:text-foreground transition-colors">
@@ -50,33 +59,53 @@ export default function AccountMenu() {
   }
 
   return (
-    <div className="relative shrink-0">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 text-gray-600 hover:text-foreground transition-colors whitespace-nowrap"
-      >
-        <span className="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-semibold flex items-center justify-center shrink-0">
-          {(user.email ?? "?").charAt(0).toUpperCase()}
-        </span>
-        <span className="max-w-[10rem] truncate">{user.email}</span>
-      </button>
-      {open && (
-        <div className="absolute right-0 top-full mt-1.5 bg-white border border-black/8 rounded-xl shadow-md py-1 min-w-[9rem] z-40">
+    <>
+      {/* Primary nav — only shown to signed-in users */}
+      <nav className="flex items-center gap-6 text-sm font-medium">
+        {NAV_LINKS.map((link) => (
           <Link
-            href="/profiles"
-            onClick={() => setOpen(false)}
-            className="block px-3.5 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            key={link.href}
+            href={link.href}
+            className={`transition-colors ${
+              pathname === link.href
+                ? "text-foreground"
+                : "text-gray-500 hover:text-foreground"
+            }`}
           >
-            Profiles
+            {link.label}
           </Link>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left px-3.5 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            Log out
-          </button>
-        </div>
-      )}
-    </div>
+        ))}
+      </nav>
+
+      {/* Account dropdown */}
+      <div className="relative shrink-0">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-1.5 text-gray-600 hover:text-foreground transition-colors whitespace-nowrap"
+        >
+          <span className="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-semibold flex items-center justify-center shrink-0">
+            {(user.email ?? "?").charAt(0).toUpperCase()}
+          </span>
+          <span className="max-w-[10rem] truncate">{user.email}</span>
+        </button>
+        {open && (
+          <div className="absolute right-0 top-full mt-1.5 bg-white border border-black/8 rounded-xl shadow-md py-1 min-w-[9rem] z-40">
+            <Link
+              href="/profiles"
+              onClick={() => setOpen(false)}
+              className="block px-3.5 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              Profiles
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-3.5 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              Log out
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
