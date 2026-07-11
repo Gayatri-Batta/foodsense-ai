@@ -33,72 +33,132 @@ const STEPS = [
   },
 ];
 
-// Step 1 — dots appear one by one over the plate
+// Step 1 — food items visible first, then dots pop onto each one
+const FOOD_ITEMS = [
+  {
+    top: "18%", left: "38%",
+    emoji: "🍚", label: "White rice",
+    badge: "High Risk", tc: "text-red-400",
+    bg: "#ef4444", glow: "rgba(239,68,68,0.65)",
+  },
+  {
+    top: "44%", left: "60%",
+    emoji: "🍗", label: "Grilled chicken",
+    badge: "Safe", tc: "text-green-400",
+    bg: "#22c55e", glow: "rgba(34,197,94,0.65)",
+  },
+  {
+    top: "62%", left: "28%",
+    emoji: "🥦", label: "Broccoli",
+    badge: "Safe", tc: "text-green-400",
+    bg: "#22c55e", glow: "rgba(34,197,94,0.65)",
+  },
+  {
+    top: "30%", left: "62%",
+    emoji: "🫙", label: "Coconut sauce",
+    badge: "Caution", tc: "text-amber-400",
+    bg: "#f59e0b", glow: "rgba(245,158,11,0.65)",
+  },
+];
+
 function ScanStep() {
+  const [phase, setPhase] = useState<"food" | "scanning" | "dots">("food");
   const [dotsVisible, setDotsVisible] = useState(0);
 
   useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    [600, 1100, 1600, 2100].forEach((delay, i) => {
-      timers.push(setTimeout(() => setDotsVisible(i + 1), delay));
-    });
-    return () => timers.forEach(clearTimeout);
+    // Show food first, then start scan line, then pop dots
+    const t1 = setTimeout(() => setPhase("scanning"), 600);
+    const t2 = setTimeout(() => setPhase("dots"), 1400);
+    const dotTimers = [1600, 2000, 2400, 2800].map((delay, i) =>
+      setTimeout(() => setDotsVisible(i + 1), delay)
+    );
+    return () => { clearTimeout(t1); clearTimeout(t2); dotTimers.forEach(clearTimeout); };
   }, []);
-
-  const dots = [
-    { top: "26%", left: "37%", bg: "#ef4444", glow: "rgba(239,68,68,0.6)", label: "White rice" },
-    { top: "53%", left: "63%", bg: "#f59e0b", glow: "rgba(245,158,11,0.6)", label: "Coconut sauce" },
-    { top: "44%", left: "24%", bg: "#22c55e", glow: "rgba(34,197,94,0.6)", label: "Chicken" },
-    { top: "64%", left: "48%", bg: "#22c55e", glow: "rgba(34,197,94,0.6)", label: "Broccoli" },
-  ];
 
   return (
     <div className="h-full flex flex-col">
-      <div className="relative flex-1 bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
-        <div className="w-32 h-32 rounded-full bg-stone-700/40 border border-stone-600/20 flex items-center justify-center select-none">
-          <span className="text-5xl">🍛</span>
+      <div className="relative flex-1 bg-gradient-to-br from-stone-800 to-stone-950 overflow-hidden">
+        {/* Plate ring */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-44 h-44 rounded-full border border-stone-600/25 bg-stone-700/20" />
         </div>
 
-        {dots.map((d, i) => (
+        {/* Food emojis always visible */}
+        {FOOD_ITEMS.map((item, i) => (
           <div
             key={i}
-            className="absolute flex flex-col items-center gap-1 transition-all duration-500"
+            className="absolute flex flex-col items-center"
+            style={{ top: item.top, left: item.left, transform: "translate(-50%, -50%)" }}
+          >
+            <span className="text-2xl select-none drop-shadow-md">{item.emoji}</span>
+          </div>
+        ))}
+
+        {/* Scanning sweep line */}
+        {phase === "scanning" && (
+          <div
+            className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-green-400/70 to-transparent"
+            style={{ animation: "scanLine 0.8s ease-in-out" }}
+          />
+        )}
+
+        {/* Detection dots pop onto each food item */}
+        {FOOD_ITEMS.map((item, i) => (
+          <div
+            key={i}
+            className="absolute flex items-start gap-1.5 transition-all duration-300"
             style={{
-              top: d.top,
-              left: d.left,
+              top: item.top,
+              left: item.left,
+              transform: "translate(-50%, -50%)",
               opacity: dotsVisible > i ? 1 : 0,
-              transform: dotsVisible > i ? "scale(1)" : "scale(0.4)",
+              scale: dotsVisible > i ? "1" : "0.3",
             }}
           >
+            {/* Dot sits top-left of the emoji */}
             <div
-              className="w-4 h-4 rounded-full border-2 border-white"
-              style={{ background: d.bg, boxShadow: `0 0 10px 4px ${d.glow}` }}
+              className="w-3.5 h-3.5 rounded-full border-[1.5px] border-white shrink-0 -mt-4 -ml-3"
+              style={{ background: item.bg, boxShadow: `0 0 8px 3px ${item.glow}` }}
             />
             {dotsVisible > i && (
               <span
-                className="text-[9px] text-white/70 bg-black/40 rounded px-1 py-0.5 whitespace-nowrap"
-                style={{ animation: "fadeIn 0.3s ease" }}
+                className="text-[9px] font-medium text-white/80 bg-black/50 backdrop-blur-sm rounded px-1.5 py-0.5 whitespace-nowrap -mt-6"
               >
-                {d.label}
+                {item.label}
               </span>
             )}
           </div>
         ))}
 
-        <div className="absolute top-2 right-3 bg-black/40 backdrop-blur-sm rounded-full px-2.5 py-1 text-[10px] text-white/70 font-medium">
+        {/* Label top-right */}
+        <div className="absolute top-2 right-3 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1 text-[10px] text-white/70 font-medium">
           Chicken Rice Bowl
         </div>
 
-        {dotsVisible < 4 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-white/40 animate-pulse">
-            Detecting items...
+        {/* Status bottom */}
+        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2">
+          {dotsVisible < FOOD_ITEMS.length ? (
+            <span className="text-[10px] text-white/40 animate-pulse">Detecting items...</span>
+          ) : (
+            <span className="text-[10px] text-green-400 font-medium">4 items detected</span>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom results strip — fades in once all dots are placed */}
+      <div
+        className="bg-[#0d1710] border-t border-white/8 px-4 py-2.5 grid grid-cols-2 gap-x-4 gap-y-1.5 transition-opacity duration-500"
+        style={{ opacity: dotsVisible === FOOD_ITEMS.length ? 1 : 0 }}
+      >
+        {FOOD_ITEMS.map((item) => (
+          <div key={item.label} className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: item.bg }} />
+              <span className="text-white/65 text-[10px] truncate">{item.label}</span>
+            </div>
+            <span className={`text-[9px] font-bold ml-1 shrink-0 ${item.tc}`}>{item.badge}</span>
           </div>
-        )}
-        {dotsVisible === 4 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-green-400 font-medium">
-            4 items detected
-          </div>
-        )}
+        ))}
       </div>
     </div>
   );
